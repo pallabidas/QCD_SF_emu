@@ -113,8 +113,8 @@ if __name__ == "__main__":
     c.SaveAs("out_"+options.year+"/"+options.year+"OSSSSF_bjet.png")
     '''
     h_closureOS.SetTitle("")
-    h_closureOS.SetMinimum(0.5)
-    h_closureOS.SetMaximum(1.5)
+    h_closureOS.SetMinimum(0.0)
+    h_closureOS.SetMaximum(2.0)
     h_closureOS.GetXaxis().SetTitle("p_{T}(#mu) (GeV)")
     h_closureOS.GetYaxis().SetTitle("p_{T}(e) (GeV)")
     h_closureOS.Draw("colz")
@@ -123,8 +123,8 @@ if __name__ == "__main__":
     c.SaveAs("out_"+options.year+"/"+options.year+"closure.png")
 
     h_correction.SetTitle("")
-    h_correction.SetMinimum(0.5)
-    h_correction.SetMaximum(1.5)
+    h_correction.SetMinimum(0.0)
+    h_correction.SetMaximum(2.0)
     h_correction.GetXaxis().SetTitle("p_{T}(#mu) (GeV)")
     h_correction.GetYaxis().SetTitle("p_{T}(e) (GeV)")
     h_correction.Draw("colz")

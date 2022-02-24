@@ -21,7 +21,7 @@ then
   ./$exe $inpath/TTToSemiLeptonic.root $outpath/TTToSemiLeptonic.root TTToSemiLeptonic ttbar $year
 fi
 
-if [ $dataset == "other" ]
+if [ $dataset == "other1" ]
 then
   ./$exe $inpath/DY.root $outpath/DY.root DY ZJ $year
   ./$exe $inpath/DY1.root $outpath/DY1.root DY1 ZJ $year
@@ -46,6 +46,10 @@ then
   ./$exe $inpath/GGZHNNTT.root $outpath/GGZHNNTT.root GGZHNNTT Zh_htt $year
   ./$exe $inpath/GGZHQQTT.root $outpath/GGZHQQTT.root GGZHQQTT Zh_htt $year
   ./$exe $inpath/GGZHWW.root $outpath/GGZHWW.root GGZHWW Zh_hww $year
+fi
+
+if [ $dataset == "other2" ]
+then
   ./$exe $inpath/ST_tW_antitop.root $outpath/ST_tW_antitop.root ST_tW_antitop ST $year
   ./$exe $inpath/ST_tW_top.root $outpath/ST_tW_top.root ST_tW_top ST $year
   ./$exe $inpath/ST_t_antitop.root $outpath/ST_t_antitop.root ST_t_antitop ST $year
@@ -55,6 +59,10 @@ then
   ./$exe $inpath/VV2L2Nu.root $outpath/VV2L2Nu.root VV2L2Nu VV $year
   ./$exe $inpath/WZ2L2Q.root $outpath/WZ2L2Q.root WZ2L2Q VV $year
   ./$exe $inpath/WZ3L1Nu.root $outpath/WZ3L1Nu.root WZ3L1Nu VV $year
+fi
+
+if [ $dataset == "other3" ]
+then
   ./$exe $inpath/WminusHTT.root $outpath/WminusHTT.root WminusHTT Wh_htt $year
   ./$exe $inpath/WminusHWW.root $outpath/WminusHWW.root WminusHWW Wh_hww $year
   ./$exe $inpath/WplusHTT.root $outpath/WplusHTT.root WplusHTT Wh_htt $year
@@ -63,6 +71,10 @@ then
   ./$exe $inpath/ZHWW.root $outpath/ZHWW.root ZHWW Zh_hww $year
   ./$exe $inpath/ZZ2L2Q.root $outpath/ZZ2L2Q.root ZZ2L2Q VV $year
   ./$exe $inpath/ZZ4L.root $outpath/ZZ4L.root ZZ4L VV $year
+fi
+
+if [ $dataset == "other4" ]
+then
   ./$exe $inpath/ttHnonbb.root $outpath/ttHnonbb.root ttHnonbb tth $year
   ./$exe $inpath/ttHbb.root $outpath/ttHbb.root ttHbb tth $year
   ./$exe $inpath/W.root $outpath/W.root W WJ $year

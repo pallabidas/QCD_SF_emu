@@ -30,6 +30,8 @@
 #include "RooWorkspace.h"
 #include "RooRealVar.h"
 #include "RooFunctor.h"
+#include "BTagCalibrationStandalone.h"
+#include "BTagCalibrationStandalone.cpp"
 
 using namespace std;
 
@@ -199,19 +201,16 @@ int main(int argc, char** argv) {
     arbre->SetBranchAddress("genweight", &genweight);
     arbre->SetBranchAddress("prefiring_weight", &prefiring_weight);
     
-    float bins_0bjet[] = {0,0.1,0.6,1.1,1.6,2.1,2.6,3.1,3.6,4.1,4.6,5.1,6};
-    int  binnum_0bjet = sizeof(bins_0bjet)/sizeof(Float_t) - 1;
-    float bins_bjet[] = {0,0.1,0.6,1.1,1.6,2.1,2.6,3.1,3.6,4.1,4.6,5.1,6};
-    int  binnum_bjet = sizeof(bins_bjet)/sizeof(Float_t) - 1;
+    // default: 11,0.4,5.9
+    // dR>0.3: 11,0.3,5.8
+    TH1F* h0_INOS = new TH1F ("","",11,0.3,5.8); h0_INOS->Sumw2();
+    TH1F* h0_INSS = new TH1F ("","",11,0.3,5.8); h0_INSS->Sumw2();
+    TH1F* h1_INOS = new TH1F ("","",11,0.3,5.8); h1_INOS->Sumw2();
+    TH1F* h1_INSS = new TH1F ("","",11,0.3,5.8); h1_INSS->Sumw2();
     
-    TH1F* h0_INOS = new TH1F ("","",binnum_0bjet,bins_0bjet); h0_INOS->Sumw2();
-    TH1F* h0_INSS = new TH1F ("","",binnum_0bjet,bins_0bjet); h0_INSS->Sumw2();
-    TH1F* h1_INOS = new TH1F ("","",binnum_bjet,bins_bjet); h1_INOS->Sumw2();
-    TH1F* h1_INSS = new TH1F ("","",binnum_bjet,bins_bjet); h1_INSS->Sumw2();
-    
-    float bins_pte[] = {13,20,24,35,100};
+    float bins_pte[] = {13,20,24,30,60};
     int  binnum_pte = sizeof(bins_pte)/sizeof(Float_t) - 1;
-    float bins_ptm[] = {13,20,24,35,100};
+    float bins_ptm[] = {13,20,24,30,60};
     int  binnum_ptm = sizeof(bins_ptm)/sizeof(Float_t) - 1;
     
     TH2F* closureOS = new TH2F("closureOS","closureOS",binnum_ptm,bins_ptm,binnum_pte,bins_pte); closureOS->Sumw2();
@@ -258,6 +257,19 @@ int main(int argc, char** argv) {
     }
     if (year==2016) LumiWeights_12 = new reweight::LumiReWeighting("MC_Moriond17_PU25ns_V1.root", "Data_Pileup_2016_271036-284044_80bins.root", "pileup", "pileup");
     
+    //btagging SF reader
+    std::string btagSFfile = "DeepJet_102XSF_V2_JESreduced";
+    if (year==2017) btagSFfile = "DeepFlavour_94XSF_V4_B_F_JESreduced";
+    if (year==2016) btagSFfile = "DeepJet_2016LegacySF_V1_TuneCP5_JESreduced";
+    std::string btagSFfilecsv = btagSFfile + ".csv";
+    
+    BTagCalibration calib(btagSFfile, btagSFfilecsv);
+    BTagCalibrationReader reader(BTagEntry::OP_RESHAPING, "central", {});
+    reader.load(calib, BTagEntry::FLAV_B, "iterativefit");
+    reader.load(calib, BTagEntry::FLAV_C, "iterativefit");
+    reader.load(calib, BTagEntry::FLAV_UDSG, "iterativefit");
+    
+    
     Int_t nentries_wtn = (Int_t) arbre->GetEntries();
     for (Int_t i = 0; i < nentries_wtn; i++) {
         arbre->GetEntry(i);
@@ -288,98 +300,82 @@ int main(int argc, char** argv) {
         myele.SetPtEtaPhiM(pt_1,eta_1,phi_1,m_1);
         TLorentzVector mymu;
         mymu.SetPtEtaPhiM(pt_2,eta_2,phi_2,m_2);
-        if (mymu.DeltaR(myele)<0.1) continue;
+        if (mymu.DeltaR(myele)<0.3) continue;
         
-        //bool isII=(iso_1<0.10 && iso_2<0.15);
-        bool isIN=(iso_1<0.10 && iso_2>0.15 && iso_2<0.50);
-        bool isNI=(iso_1>0.10 && iso_1<0.50 && iso_2<0.15);
-        bool isNN=(iso_1>0.10 && iso_1<0.50 && iso_2>0.15 && iso_2<0.50);
+        //bool isII=(iso_1<0.15 && iso_2<0.15);
+        bool isIN=(iso_1<0.15 && iso_2>0.15 && iso_2<0.50);
+        bool isNI=(iso_1>0.15 && iso_1<0.50 && iso_2<0.15);
+        bool isNN=(iso_1>0.15 && iso_1<0.50 && iso_2>0.15 && iso_2<0.50);
         
         if (name=="ZJ"){
             if (sample=="DY" or sample=="DY1" or sample=="DY2" or sample=="DY3" or sample=="DY4"){
                 if (numGenJets==0){
                     weight = 3.630;
-                    if (year==2017) weight = 2.575;
+                    if (year==2017) weight = 2.583;
                     if (year==2016) weight = 1.509;
                 }
                 else if (numGenJets==1){
                     weight = 0.6304;
-                    if (year==2017) weight = 0.7084;
+                    if (year==2017) weight = 0.3269;
                     if (year==2016) weight = 0.4814;
                 }
                 else if (numGenJets==2){
                     weight = 0.5528;
-                    if (year==2017) weight = 0.9192;
+                    if (year==2017) weight = 0.5667;
                     if (year==2016) weight = 0.4987;
                 }
                 else if (numGenJets==3){
                     weight = 0.6009;
-                    if (year==2017) weight = 1.648;
+                    if (year==2017) weight = 0.5228;
                     if (year==2016) weight = 0.5113;
                 }
                 else if (numGenJets==4){
                     weight = 0.8314;
-                    if (year==2017) weight = 0.2192;
+                    if (year==2017) weight = 0.2199;
                     if (year==2016) weight = 0.4194;
                 }
             }
             if (sample=="DYlow" or sample=="DY1low" or sample=="DY2low" or sample=="DY3low" or sample=="DY4low"){
-                if (numGenJets==0){
-                    weight = 12.45;
-                    if (year==2017) weight = 1.0;
-                    if (year==2016) weight = 20.64;
+                if (year==2016){
+                    if (numGenJets==0) weight = 20.64;
+                    else if (numGenJets==1) weight = 0.7822;
+                    else if (numGenJets==2) weight = 0.8491;
+                    else if (numGenJets==3) weight = 0.8178;
+                    else if (numGenJets==4) weight = 0.7536;
                 }
-                else if (numGenJets==1){
-                    weight = 12.45;
-                    if (year==2017) weight = 1.0;
-                    if (year==2016) weight = 0.7822;
-                }
-                else if (numGenJets==2){
-                    weight = 12.45;
-                    if (year==2017) weight = 1.0;
-                    if (year==2016) weight = 0.8491;
-                }
-                else if (numGenJets==3){
-                    weight = 12.45;
-                    if (year==2017) weight = 1.0;
-                    if (year==2016) weight = 0.8178;
-                }
-                else if (numGenJets==4){
-                    weight = 12.45;
-                    if (year==2017) weight = 1.0;
-                    if (year==2016) weight = 0.7536;
-                }
+                if (year==2017) weight = 9.416;
+                if (year==2018) weight = 12.45;
             }
         }
         
         if (name=="WJ"){
             if (numGenJets==0){
                 weight = 51.81;
-                if (year==2017) weight = 23.67;
+                if (year==2017) weight = 23.74;
                 if (year==2016) weight = 25.72;
             }
             else if (numGenJets==1){
                 weight = 9.091;
-                if (year==2017) weight = 3.106;
+                if (year==2017) weight = 3.116;
                 if (year==2016) weight = 5.840;
             }
             else if (numGenJets==2){
                 weight = 4.516;
-                if (year==2017) weight = 3.014;
+                if (year==2017) weight = 3.024;
                 if (year==2016) weight = 1.814;
             }
             else if (numGenJets==3){
                 weight = 3.090;
-                if (year==2017) weight = 2.202;
+                if (year==2017) weight = 1.355;
                 if (year==2016) weight = 0.6878;
             }
             else if (numGenJets==4){
                 weight = 3.227;
-                if (year==2017) weight = 2.150;
+                if (year==2017) weight = 1.119;
                 if (year==2016) weight = 0.7453;
             }
-        }
-        
+        }       
+ 
         //if (sample=="embedded" && (gen_match_1==6 or gen_match_2==6)) continue;
         bool is_includedInEmbedded=false;
         if ((sample!="data_obs" && sample!="embedded" && name!="ggh_htt" && name!="ggh_hww" && name!="qqh_htt" && name!="qqh_hww" && name!="Zh_htt" && name!="Zh_hww" && name!="Wh_htt" && name!="Wh_hww" && name!="tth") && gen_match_1>2 && gen_match_1<6 && gen_match_2>2 && gen_match_2<6) is_includedInEmbedded = true; // remove overlap with embedded samples
@@ -457,10 +453,19 @@ int main(int argc, char** argv) {
             bMflavor_2 = bflavour_deepflavour_2;
             nbtag20++;
         }
+        //b-tagged jet true flavour to be passed to btag SF reader
+        auto btagflavour_1 = BTagEntry::FLAV_B;
+        if (bflavour_deepflavour_1==5) btagflavour_1 = BTagEntry::FLAV_B;
+        if (bflavour_deepflavour_1==4) btagflavour_1 = BTagEntry::FLAV_C;
+        if (bflavour_deepflavour_1==0) btagflavour_1 = BTagEntry::FLAV_UDSG;
+        auto btagflavour_2 = BTagEntry::FLAV_B;
+        if (bflavour_deepflavour_2==5) btagflavour_2 = BTagEntry::FLAV_B;
+        if (bflavour_deepflavour_2==4) btagflavour_2 = BTagEntry::FLAV_C;
+        if (bflavour_deepflavour_2==0) btagflavour_2 = BTagEntry::FLAV_UDSG;
         
-        float weight_btag = 1.0;
-        float weight_0btag = 1.0;
+        float weight_btag = 1.0;//no correction if requiring 0 btag
         if (sample!="data_obs" && sample!="embedded"){
+            /*
             if (nbtag20==1){
                 if (year==2016) weight_btag = GetSF_2016(1, bMpt_1, bMflavor_1, 0);
                 if (year==2017) weight_btag = GetSF_2017(1, bMpt_1, bMflavor_1, 0);
@@ -472,6 +477,10 @@ int main(int argc, char** argv) {
                 if (year==2018) weight_btag = GetSF_2018(1, bMpt_1, bMflavor_1, 0)*GetSF_2018(1, bMpt_2, bMflavor_2, 0);
             }
             weight_0btag = bTagEventWeight(nbtag20,bMpt_1,bMflavor_1,bMpt_2,bMflavor_2,1,0,0,year);
+            */
+            
+            if (nbtag20==1) weight_btag = reader.eval_auto_bounds("central", btagflavour_1, fabs(beta_deepflavour_1), bMpt_1, bscore_deepflavour_1);
+            if (nbtag20==2) weight_btag = reader.eval_auto_bounds("central", btagflavour_1, fabs(beta_deepflavour_1), bMpt_1, bscore_deepflavour_1)*reader.eval_auto_bounds("central", btagflavour_2, fabs(beta_deepflavour_2), bMpt_2, bscore_deepflavour_2);
         }
         
         float sssf=2.5;
@@ -479,11 +488,11 @@ int main(int argc, char** argv) {
         else sssf = osss_bjet->Eval(myele.DeltaR(mymu));
         if (sssf<0 or sssf>10) sssf = 0;
         
-        if (((sample=="data_obs" or sample=="embedded") && nbtag20==0) or (sample!="embedded" && sample!="data_obs")){
+        if (nbtag20==0){
             if (isIN && q_1*q_2<0)
-                h0_INOS->Fill(myele.DeltaR(mymu),weight_corr*weight_0btag);
+                h0_INOS->Fill(myele.DeltaR(mymu),weight_corr);
             if (isIN && q_1*q_2>0)
-                h0_INSS->Fill(myele.DeltaR(mymu),weight_corr*weight_0btag);
+                h0_INSS->Fill(myele.DeltaR(mymu),weight_corr);
         }
         if (nbtag20>=1){
             if (isIN && q_1*q_2<0)
@@ -572,6 +581,7 @@ int main(int argc, char** argv) {
     fout->Close();
     
 } 
+
 
 
 

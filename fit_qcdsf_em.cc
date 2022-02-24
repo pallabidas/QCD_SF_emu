@@ -80,6 +80,10 @@ Double_t fitFunc_Landau(Double_t *x, Double_t *par) {
     return par[0] + par[1]*(TMath::Landau((x[0]-30),par[2],par[3],0));
 }
 
+Double_t reflect(Double_t *x, Double_t *par) {
+    return 2*(par[0] + par[1]*x[0]+par[2]*x[0]*x[0]+par[3]*x[0]*x[0]*x[0])-(par[4] + par[5]* (x[0]-3.0));
+}
+
 TF1 *M_FR(std::string type, std::string files, std::string num, std::string denum, std::string name, Double_t fMin, Double_t fMax, int year) {
     
     TFile *inputFile = new TFile(files.c_str());
@@ -96,7 +100,10 @@ TF1 *M_FR(std::string type, std::string files, std::string num, std::string denu
     TGraph_FR->Divide(histogram_pass, histogram_fail, "pois");
     
     TF1 * theFit = new TF1("theFit", fitFunc_Line2Par2, fMin, fMax, 4);
+    TF1 * theFit2 = new TF1("theFit2", fitFunc_Exp3Par, fMin, fMax, 2);
     
+    theFit2->SetParameter(0, 0.1);
+    theFit2->SetParameter(1, -0.01); 
     if (type.find("Line2Par2") < 140){
         theFit->SetParameter(0, 2.0);
         theFit->SetParameter(1, -0.3);
@@ -113,14 +120,15 @@ TF1 *M_FR(std::string type, std::string files, std::string num, std::string denu
     }
     
     TGraph_FR->Fit("theFit", "R0");
+    TGraph_FR->Fit("theFit2", "R0");
     
     TCanvas* canvas = new TCanvas("canvas", "", 800, 800);
     canvas->SetTitle("");
     canvas->SetGrid();
     
-    TGraph_FR->GetYaxis()->SetRangeUser(0,8);
+    TGraph_FR->GetYaxis()->SetRangeUser(0,4);
     TGraph_FR->GetYaxis()->SetTitle("OS-to-SS scale factor");
-    TGraph_FR->GetXaxis()->SetRangeUser(0,6);
+    TGraph_FR->GetXaxis()->SetRangeUser(0,5);
     TGraph_FR->GetXaxis()->SetTitle("#DeltaR(e,#mu)");
     TGraph_FR->SetTitle("");
     TGraph_FR->Draw("PAE");
@@ -136,9 +144,96 @@ TF1 *M_FR(std::string type, std::string files, std::string num, std::string denu
     if (year==2016) t.DrawLatex(0.55, .96, "2016, 36.3 fb^{-1} (13 TeV)");
     if (year==2017) t.DrawLatex(0.55, .96, "2017, 41.5 fb^{-1} (13 TeV)");
     if (year==2018) t.DrawLatex(0.55, .96, "2018, 59.7 fb^{-1} (13 TeV)");
+/*
+    Double_t TauLegParameters[2];
+    theFit2->GetParameters(TauLegParameters);
+
+    Double_t matrix[2][2];
+    gMinuit->mnemat(&matrix[0][0],2);
+    TMatrixD mat_D(2,2);
+    for (int i=0; i<2; ++i){
+        for (int j=0; j<2; ++j){
+             mat_D[i][j]=matrix[i][j];
+        }
+    }
+    TMatrixDEigen mat_sym=TMatrixDEigen (mat_D);
+    TMatrixD eigenValues=mat_sym.GetEigenValues();
+    TMatrixD eigenVectors=mat_sym.GetEigenVectors();
+    TMatrixD eigenVectorsInverted=mat_sym.GetEigenVectors();
+    float aup = TauLegParameters[0]+eigenVectorsInverted[0][0]*sqrt(eigenValues[0][0])+eigenVectorsInverted[0][1]*sqrt(eigenValues[1][1]);
+    float bup = TauLegParameters[1]+eigenVectorsInverted[0][1]*sqrt(eigenValues[0][0])+eigenVectorsInverted[1][1]*sqrt(eigenValues[1][1]);
+    float adown = TauLegParameters[0]-eigenVectorsInverted[0][0]*sqrt(eigenValues[0][0])-eigenVectorsInverted[0][1]*sqrt(eigenValues[1][1]);
+    float bdown = TauLegParameters[1]-eigenVectorsInverted[0][1]*sqrt(eigenValues[0][0])-eigenVectorsInverted[1][1]*sqrt(eigenValues[1][1]);
+
+    float au1=TauLegParameters[0]+eigenVectorsInverted[0][0]*sqrt(eigenValues[0][0]);
+    float bu1=TauLegParameters[1]+eigenVectorsInverted[0][1]*sqrt(eigenValues[0][0]);
+    float ad1=TauLegParameters[0]-eigenVectorsInverted[0][0]*sqrt(eigenValues[0][0]);
+    float bd1=TauLegParameters[1]-eigenVectorsInverted[0][1]*sqrt(eigenValues[0][0]);
+    float au2=TauLegParameters[0]+eigenVectorsInverted[0][1]*sqrt(eigenValues[1][1]);
+    float bu2=TauLegParameters[1]+eigenVectorsInverted[1][1]*sqrt(eigenValues[1][1]);
+    float ad2=TauLegParameters[0]-eigenVectorsInverted[0][1]*sqrt(eigenValues[1][1]);
+    float bd2=TauLegParameters[1]-eigenVectorsInverted[1][1]*sqrt(eigenValues[1][1]);
+
+    TF1 * theFitup1 = new TF1("theFit2", fitFunc_Exp3Par, fMin, fMax, 2);
+    theFitup1->SetParameter(0, au1);
+    theFitup1->SetParameter(1, bu1);
+    theFitup1->SetLineColor(kViolet+1);
+    theFitup1->Draw("same");
+    TF1 * theFitup2 = new TF1("theFit2", fitFunc_Exp3Par, fMin, fMax, 2);
+    theFitup2->SetParameter(0, au2);
+    theFitup2->SetParameter(1, bu2);
+    theFitup2->SetLineColor(kGreen-3);
+    theFitup2->Draw("same");
+    TF1 * theFitdown1 = new TF1("theFit2", fitFunc_Exp3Par, fMin, fMax, 2);
+    theFitdown1->SetParameter(0, ad1);
+    theFitdown1->SetParameter(1, bd1);
+    theFitdown1->SetLineColor(kViolet+1);
+    theFitdown1->Draw("same");
+    TF1 * theFitdown2 = new TF1("theFit2", fitFunc_Exp3Par, fMin, fMax, 2);
+    theFitdown2->SetParameter(0, ad2);
+    theFitdown2->SetParameter(1, bd2);
+    theFitdown2->SetLineColor(kGreen-3);
+    theFitdown2->Draw("same");
+    TLegend *l = new TLegend(0.55, 0.74, 0.7, 0.89, NULL, "brNDC");
+    l->SetBorderSize(0);
+    l->SetFillColor(0);
+    l->SetTextSize(.03);
+    l->SetFillColor(0);
+    l->AddEntry(theFit, "Best fit", "l");
+    l->AddEntry(theFitup1, "1st uncertainty #pm 1#sigma", "l");
+    l->AddEntry(theFitup2, "2nd uncertainty #pm 1#sigma", "l");
+    l->Draw("same");*/
+
+    TF1 * theFit2sym = new TF1("theFit2sym", reflect, fMin, fMax, 6);
+    Double_t fitpar[4];
+    theFit->GetParameters(fitpar);
+    Double_t fitpar2[2];
+    theFit2->GetParameters(fitpar2);
+    theFit2sym->SetParameter(0,fitpar[0]);
+    theFit2sym->SetParameter(1,fitpar[1]);
+    theFit2sym->SetParameter(2,fitpar[2]);
+    theFit2sym->SetParameter(3,fitpar[3]);
+    theFit2sym->SetParameter(4,fitpar2[0]);
+    theFit2sym->SetParameter(5,fitpar2[1]);
+    
+
     theFit->Draw("SAME");
     theFit->SetLineColor(2);
-    
+    theFit2->Draw("SAME");
+    theFit2->SetLineColor(kGreen-3);
+    theFit2sym->Draw("SAME");
+    theFit2sym->SetLineColor(kViolet+1);
+   
+    TLegend *l = new TLegend(0.35, 0.74, 0.7, 0.89, NULL, "brNDC");
+    l->SetBorderSize(0);
+    l->SetFillColor(0);
+    l->SetTextSize(.03);
+    l->SetFillColor(0);
+    l->AddEntry(theFit, "Best fit (3rd order polynomial)", "l");
+    l->AddEntry(theFit2, "Uncertainty 1#sigma up (linear fit)", "l");
+    l->AddEntry(theFit2sym, "Uncertainty 1#sigma down (up shape wrt best fit)", "l");
+    l->Draw("same");
+
     canvas->SaveAs(outNaming.c_str());
     
     std::string osssfilename = "out_2016/osss_em_2016.root";
@@ -148,6 +243,19 @@ TF1 *M_FR(std::string type, std::string files, std::string num, std::string denu
     FR_H->cd();
     theFit->SetName(TString(name));
     theFit->Write();
+    theFit2->SetName(TString(name)+TString("_up"));
+    theFit2->Write();
+    theFit2sym->SetName(TString(name)+TString("_down"));
+    theFit2sym->Write();
+/*
+    theFitup1->SetName(TString(name)+TString("_up1"));
+    theFitup1->Write();
+    theFitup2->SetName(TString(name)+TString("_up2"));
+    theFitup2->Write();
+    theFitdown1->SetName(TString(name)+TString("_down1"));
+    theFitdown1->Write();
+    theFitdown2->SetName(TString(name)+TString("_down2"));
+    theFitdown2->Write();*/
     FR_H->Close();
     
     return theFit;
@@ -155,10 +263,10 @@ TF1 *M_FR(std::string type, std::string files, std::string num, std::string denu
 
 void fit_qcdsf_em(int year) {
     
-    gStyle->SetOptFit(1111);
+    //gStyle->SetOptFit(1111);
     
-    Double_t fMin = 0.1;
-    Double_t fMax = 6;
+    Double_t fMin = 0.3;
+    Double_t fMax = 5.05;
     
     std::string datafile="out_2016/Sub2016.root";
     if (year==2017) datafile="out_2017/Sub2017.root";
@@ -168,5 +276,6 @@ void fit_qcdsf_em(int year) {
     TF1* m12 = M_FR("Line2Par2", datafile, "INOS_h1", "INSS_h1", "OSSS_qcd_bjet", fMin, fMax, year);
     
 }
+
 
 
