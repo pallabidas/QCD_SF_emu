@@ -88,16 +88,15 @@ TF1 *M_FR(std::string type, std::string files, std::string num, std::string denu
     
     TFile *inputFile = new TFile(files.c_str());
     
-    TH1D *Numerator = (TH1D*) inputFile->Get(num.c_str());
-    TH1D *Denumerator = (TH1D*) inputFile->Get(denum.c_str());
-    
-    TH1D *histogram_pass = (TH1D*) Numerator->Rebin(1);
-    TH1D *histogram_fail = (TH1D*) Denumerator->Rebin(1);
+    TH1D *histogram_pass = (TH1D*) inputFile->Get(num.c_str());
+    TH1D *histogram_fail = (TH1D*) inputFile->Get(denum.c_str());
     
     makeBinsInteger(histogram_pass, histogram_fail);
-    
-    TGraphAsymmErrors* TGraph_FR = new TGraphAsymmErrors(26);
-    TGraph_FR->Divide(histogram_pass, histogram_fail, "pois");
+
+    TH1D *histogram_divided = (TH1D*) histogram_pass->Clone();
+    histogram_divided->Divide(histogram_pass, histogram_fail, 1.0, 1.0, "pois");
+ 
+    TGraphAsymmErrors* TGraph_FR = new TGraphAsymmErrors(histogram_divided);
     
     TF1 * theFit = new TF1("theFit", fitFunc_Line2Par2, fMin, fMax, 4);
     TF1 * theFit2 = new TF1("theFit2", fitFunc_Exp3Par, fMin, fMax, 2);
@@ -143,7 +142,7 @@ TF1 *M_FR(std::string type, std::string files, std::string num, std::string denu
     t.SetTextSize(0.04);
     if (year==2016) t.DrawLatex(0.55, .96, "2016, 36.3 fb^{-1} (13 TeV)");
     if (year==2017) t.DrawLatex(0.55, .96, "2017, 41.5 fb^{-1} (13 TeV)");
-    if (year==2018) t.DrawLatex(0.55, .96, "2018, 59.7 fb^{-1} (13 TeV)");
+    if (year==2018) t.DrawLatex(0.55, .96, "2018, 13.6 fb^{-1} (13 TeV)");
 /*
     Double_t TauLegParameters[2];
     theFit2->GetParameters(TauLegParameters);

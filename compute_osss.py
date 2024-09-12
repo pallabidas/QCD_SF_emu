@@ -17,7 +17,7 @@ if __name__ == "__main__":
     lumi.SetTextSize(0.04)
     lumi.SetTextFont (   42 )
     if options.year=="2018":
-        lumi.AddText("2018, 59.7 fb^{-1} (13 TeV)")
+        lumi.AddText("2018, 13.6 fb^{-1} (13 TeV)")
     if options.year=="2017":
         lumi.AddText("2017, 41.5 fb^{-1} (13 TeV)")
     if options.year=="2016":

@@ -30,8 +30,7 @@
 #include "RooWorkspace.h"
 #include "RooRealVar.h"
 #include "RooFunctor.h"
-#include "BTagCalibrationStandalone.h"
-#include "BTagCalibrationStandalone.cpp"
+#include "correction.h"
 
 using namespace std;
 
@@ -40,11 +39,10 @@ int main(int argc, char** argv) {
     std::string input = *(argv + 1);
     std::string output = *(argv + 2);
     std::string sample = *(argv + 3);
-    std::string name = *(argv + 4);
     
-    int year=2016;
+    int year=2018;
     if (argc > 1) {
-        year = atof(argv[5]);
+        year = atof(argv[4]);
     }
     
     TFile *f_Double = new TFile(input.c_str());
@@ -55,7 +53,24 @@ int main(int argc, char** argv) {
     
     float xs=1.0; float weight=1.0; float luminosity=36330.0;
     if (year==2017) luminosity=41530.0;
-    if (year==2018) luminosity=59740.0;
+    //if (year==2018) luminosity=59740.0;
+    if (year==2018) luminosity=13651.;
+
+    // sample stitching: https://twiki.cern.ch/twiki/bin/viewauth/CMS/MCStitching#Stitching_inclusive_with_jet_AN1
+
+    float ZJ_kfactor = 1.1258;
+    float ZJ_n_incl = 90027952; float ZJ_xs_incl = 5398.0; float ZJ_w_incl = luminosity*ZJ_xs_incl*ZJ_kfactor/ZJ_n_incl;
+    float ZJ_n_1jet = 47588696; float ZJ_xs_1jet = 876.9; float ZJ_w_1jet = luminosity*ZJ_xs_1jet*ZJ_kfactor/(ZJ_n_1jet + (ZJ_xs_1jet/ZJ_xs_incl)*ZJ_n_incl);
+    float ZJ_n_2jet = 26886572; float ZJ_xs_2jet = 306.4; float ZJ_w_2jet = luminosity*ZJ_xs_2jet*ZJ_kfactor/(ZJ_n_2jet + (ZJ_xs_2jet/ZJ_xs_incl)*ZJ_n_incl);
+    float ZJ_n_3jet = 19961282; float ZJ_xs_3jet = 112.0; float ZJ_w_3jet = luminosity*ZJ_xs_3jet*ZJ_kfactor/(ZJ_n_3jet + (ZJ_xs_3jet/ZJ_xs_incl)*ZJ_n_incl);
+    float ZJ_n_4jet = 8601783; float ZJ_xs_4jet = 44.03; float ZJ_w_4jet = luminosity*ZJ_xs_4jet*ZJ_kfactor/(ZJ_n_4jet + (ZJ_xs_4jet/ZJ_xs_incl)*ZJ_n_incl);
+
+    float WJ_kfactor = 1.1421;
+    float WJ_n_incl = 1196391200; float WJ_xs_incl = 53870.0; float WJ_w_incl = luminosity*WJ_xs_incl*WJ_kfactor/WJ_n_incl;
+    float WJ_n_1jet = 136846340; float WJ_xs_1jet = 8927.0; float WJ_w_1jet = luminosity*WJ_xs_1jet*WJ_kfactor/(WJ_n_1jet + (WJ_xs_1jet/WJ_xs_incl)*WJ_n_incl);
+    float WJ_n_2jet = 56680067000; float WJ_xs_2jet = 2809.0; float WJ_w_2jet = luminosity*WJ_xs_2jet*WJ_kfactor/(WJ_n_2jet + (WJ_xs_2jet/WJ_xs_incl)*WJ_n_incl);
+    float WJ_n_3jet = 19976498; float WJ_xs_3jet = 826.3; float WJ_w_3jet = luminosity*WJ_xs_3jet*WJ_kfactor/(WJ_n_3jet + (WJ_xs_3jet/WJ_xs_incl)*WJ_n_incl);
+    float WJ_n_4jet = 39554320; float WJ_xs_4jet = 544.3;   float WJ_w_4jet = luminosity*WJ_xs_4jet*WJ_kfactor/(WJ_n_4jet + (WJ_xs_4jet/WJ_xs_incl)*WJ_n_incl);
     
     if (sample == "data_obs"){weight = 1.0;}
     else if(sample == "embedded"){weight = 1.0;}
@@ -65,10 +80,10 @@ int main(int argc, char** argv) {
     else if(sample == "DY3"){weight = 1.0;}
     else if(sample == "DY4"){weight = 1.0;}
     else if(sample == "DYlow"){weight = 1.0;}
-    else if(sample == "DY1low"){weight = 1.0;}
-    else if(sample == "DY2low"){weight = 1.0;}
-    else if(sample == "DY3low"){weight = 1.0;}
-    else if(sample == "DY4low"){weight = 1.0;}
+//    else if(sample == "DY1low"){weight = 1.0;}
+//    else if(sample == "DY2low"){weight = 1.0;}
+//    else if(sample == "DY3low"){weight = 1.0;}
+//    else if(sample == "DY4low"){weight = 1.0;}
     else if(sample == "GGHTT"){xs = 48.58*0.0627; weight = luminosity*xs/N;}
     else if(sample == "GGHWW"){xs = 48.58*0.2137*0.3258*0.3258; weight = luminosity*xs/N;}
     else if(sample == "GGZHLLTT"){xs = 0.1227*0.0627*3*0.033658; weight = luminosity*xs/N;}
@@ -84,22 +99,22 @@ int main(int argc, char** argv) {
     else if(sample == "TTToSemiLeptonic"){xs = 365.35; weight = luminosity*xs/N;}
     else if(sample == "VBFHTT"){xs = 3.782*0.0627; weight = luminosity*xs/N;}
     else if(sample == "VBFHWW"){xs = 3.782*0.2137*0.3258*0.3258; weight = luminosity*xs/N;}
-    else if(sample == "VV2L2Nu"){xs = 13.84; weight = luminosity*xs/N;}//11.95
+    else if(sample == "VVTo2L2Nu"){xs = 13.84; weight = luminosity*xs/N;}//11.95
     else if(sample == "W"){weight = 1.0;}
     else if(sample == "W1"){weight = 1.0;}
     else if(sample == "W2"){weight = 1.0;}
     else if(sample == "W3"){weight = 1.0;}
     else if(sample == "W4"){weight = 1.0;}
-    else if(sample == "WZ2L2Q"){xs = 5.52; weight = luminosity*xs/N;}//5.595
-    else if(sample == "WZ3L1Nu"){xs = 4.43; weight = luminosity*xs/N;}//4.708
+    else if(sample == "WZTo2Q2L"){xs = 5.52; weight = luminosity*xs/N;}//5.595
+    else if(sample == "WZTo3LNu"){xs = 4.43; weight = luminosity*xs/N;}//4.708
     else if(sample == "WminusHTT"){xs = 0.5328*0.0627; weight = luminosity*xs/N;}
     else if(sample == "WminusHWW"){xs = 0.5328*0.2137; weight = luminosity*xs/N;}
     else if(sample == "WplusHTT"){xs = 0.840*0.0627; weight = luminosity*xs/N;}
     else if(sample == "WplusHWW"){xs = 0.840*0.2137; weight = luminosity*xs/N;}
     else if(sample == "ZHTT"){xs = 0.7612*0.0627; weight = luminosity*xs/N;}
     else if(sample == "ZHWW"){xs = 0.7612*0.2137; weight = luminosity*xs/N;}
-    else if(sample == "ZZ2L2Q"){xs = 3.38; weight = luminosity*xs/N;}//3.22
-    else if(sample == "ZZ4L"){xs = 1.212; weight = luminosity*xs/N;}
+    else if(sample == "ZZTo2Q2L"){xs = 3.38; weight = luminosity*xs/N;}//3.22
+    else if(sample == "ZZTo4L"){xs = 1.212; weight = luminosity*xs/N;}
     else if(sample == "ttHnonbb"){xs = 0.5071*(1-0.5824); weight = luminosity*xs/N;}
     else if(sample == "ttHbb"){xs = 0.5071*0.5824; weight = luminosity*xs/N;}
     else {cout << "Missing sample cross section!!!" << endl; return 0;}
@@ -226,50 +241,18 @@ int main(int argc, char** argv) {
     TH2F* h_NNOS = new TH2F ("","",binnum_1,bins_1,binnum_2,bins_2); h_NNOS->Sumw2();
     TH2F* h_NNSS = new TH2F ("","",binnum_1,bins_1,binnum_2,bins_2); h_NNSS->Sumw2();
     
-    std::string osssfilename = "out_2016/osss_em_2016.root";
-    if (year==2017) osssfilename = "out_2017/osss_em_2017.root";
-    if (year==2018) osssfilename = "out_2018/osss_em_2018.root";
+    std::string osssfilename = "out_2018/osss_em_2018.root";
+    //if (year==2016) osssfilename = "out_2016/osss_em_2016.root";
+    //if (year==2017) osssfilename = "out_2017/osss_em_2017.root";
     TFile *fosss= new TFile(osssfilename.c_str(),"r");
     TF1 *osss_0bjet=(TF1*) fosss->Get("OSSS_qcd_0bjet");
     TF1 *osss_bjet=(TF1*) fosss->Get("OSSS_qcd_bjet");
-    
-    reweight::LumiReWeighting* LumiWeights_12;
-    LumiWeights_12 = new reweight::LumiReWeighting("pu_distributions_mc_2018.root", "pu_distributions_data_2018.root", "pileup", "pileup");
-    if (year==2017){
-        LumiWeights_12 = new reweight::LumiReWeighting("pu_distributions_mc_2017.root", "pu_distributions_data_2017.root", "pua/#VBFHToTauTau_M125_13TeV_powheg_pythia8#RunIIFall17MiniAODv2-PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1#MINIAODSIM", "pileup");
-        if (sample=="W1") LumiWeights_12 = new reweight::LumiReWeighting("pu_distributions_mc_2017.root", "pu_distributions_data_2017.root", "pua/#W1JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8#RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v3#MINIAODSIM", "pileup");
-        else if (sample=="W2") LumiWeights_12 = new reweight::LumiReWeighting("pu_distributions_mc_2017.root", "pu_distributions_data_2017.root", "pua/#W2JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8#RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v5#MINIAODSIM", "pileup");
-        else if (sample=="ST_t_antitop") LumiWeights_12 = new reweight::LumiReWeighting("pu_distributions_mc_2017.root", "pu_distributions_data_2017.root", "pua/#ST_t-channel_antitop_4f_inclusiveDecays_TuneCP5_13TeV-powhegV2-madspin-pythia8#RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1#MINIAODSIM", "pileup");
-        else if (sample=="DY4") LumiWeights_12 = new reweight::LumiReWeighting("pu_distributions_mc_2017.root", "pu_distributions_data_2017.root", "pua/#DY4JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8#RunIIFall17MiniAODv2-PU2017_12Apr2018_v2_94X_mc2017_realistic_v14-v2#MINIAODSIM", "pileup");
-        else if (sample=="W") LumiWeights_12 = new reweight::LumiReWeighting("pu_distributions_mc_2017.root", "pu_distributions_data_2017.root", "pua/#WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8#RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v3#MINIAODSIM", "pileup");
-        else if (sample=="DY") LumiWeights_12 = new reweight::LumiReWeighting("pu_distributions_mc_2017.root", "pu_distributions_data_2017.root", "pua/#DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8#RunIIFall17MiniAODv2-PU2017RECOSIMstep_12Apr2018_94X_mc2017_realistic_v14-v1#MINIAODSIM", "pileup");
-        else if (sample=="WW") LumiWeights_12 = new reweight::LumiReWeighting("pu_distributions_mc_2017.root", "pu_distributions_data_2017.root", "pua/#WW_TuneCP5_13TeV-pythia8#RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1#MINIAODSIM", "pileup");
-        else if (sample=="WplusHTT") LumiWeights_12 = new reweight::LumiReWeighting("pu_distributions_mc_2017.root", "pu_distributions_data_2017.root", "pua/#WplusHToTauTau_M125_13TeV_powheg_pythia8#RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1#MINIAODSIM", "pileup");
-        else if (sample=="WZ") LumiWeights_12 = new reweight::LumiReWeighting("pu_distributions_mc_2017.root", "pu_distributions_data_2017.root", "pua/#WZ_TuneCP5_13TeV-pythia8#RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1#MINIAODSIM", "pileup");
-        else if (sample=="DY4") LumiWeights_12 = new reweight::LumiReWeighting("pu_distributions_mc_2017.root", "pu_distributions_data_2017.root", "pua/#DY4JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8#RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1#MINIAODSIM", "pileup");
-        else if (sample=="ST_tW_top") LumiWeights_12 = new reweight::LumiReWeighting("pu_distributions_mc_2017.root", "pu_distributions_data_2017.root", "pua/#ST_tW_top_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8#RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2#MINIAODSIM", "pileup");
-        else if (sample=="WminusHTT") LumiWeights_12 = new reweight::LumiReWeighting("pu_distributions_mc_2017.root", "pu_distributions_data_2017.root", "pua/#WminusHToTauTau_M125_13TeV_powheg_pythia8#RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1#MINIAODSIM", "pileup");
-        else if (sample=="ST_tW_antitop") LumiWeights_12 = new reweight::LumiReWeighting("pu_distributions_mc_2017.root", "pu_distributions_data_2017.root", "pua/#ST_tW_antitop_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8#RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2#MINIAODSIM", "pileup");
-        else if (sample=="W3") LumiWeights_12 = new reweight::LumiReWeighting("pu_distributions_mc_2017.root", "pu_distributions_data_2017.root", "pua/#W3JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8#RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1#MINIAODSIM", "pileup");
-        else if (sample=="ZHTT") LumiWeights_12 = new reweight::LumiReWeighting("pu_distributions_mc_2017.root", "pu_distributions_data_2017.root", "pua/#ZHToTauTau_M125_13TeV_powheg_pythia8#RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1#MINIAODSIM", "pileup");
-        else if (sample=="TTToSemiLeptonic")  LumiWeights_12 = new reweight::LumiReWeighting("pu_distributions_mc_2017.root", "pu_distributions_data_2017.root", "pua/#TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8#RunIIFall17MiniAODv2-PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1#MINIAODSIM", "pileup");
-        else if (sample=="TTTo2L2Nu") LumiWeights_12 = new reweight::LumiReWeighting("pu_distributions_mc_2017.root", "pu_distributions_data_2017.root", "pua/#TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8#RunIIFall17MiniAODv2-PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1#MINIAODSIM", "pileup");
-    }
-    if (year==2016) LumiWeights_12 = new reweight::LumiReWeighting("MC_Moriond17_PU25ns_V1.root", "Data_Pileup_2016_271036-284044_80bins.root", "pileup", "pileup");
-    
-    //btagging SF reader
-    std::string btagSFfile = "DeepJet_102XSF_V2_JESreduced";
-    if (year==2017) btagSFfile = "DeepFlavour_94XSF_V4_B_F_JESreduced";
-    if (year==2016) btagSFfile = "DeepJet_2016LegacySF_V1_TuneCP5_JESreduced";
-    std::string btagSFfilecsv = btagSFfile + ".csv";
-    
-    BTagCalibration calib(btagSFfile, btagSFfilecsv);
-    BTagCalibrationReader reader(BTagEntry::OP_RESHAPING, "central", {});
-    reader.load(calib, BTagEntry::FLAV_B, "iterativefit");
-    reader.load(calib, BTagEntry::FLAV_C, "iterativefit");
-    reader.load(calib, BTagEntry::FLAV_UDSG, "iterativefit");
-    
-    
+   
+    //https://gitlab.cern.ch/cms-nanoAOD/jsonpog-integration/-/tree/master/POG/LUM
+    auto pileupset = correction::CorrectionSet::from_file("UL2018_puWeights.json");
+    //https://gitlab.cern.ch/cms-btv/btv-json-sf/-/tree/master/data
+    auto btaggingset = correction::CorrectionSet::from_file("UL2018_btagging.json");
+        
     Int_t nentries_wtn = (Int_t) arbre->GetEntries();
     for (Int_t i = 0; i < nentries_wtn; i++) {
         arbre->GetEntry(i);
@@ -307,78 +290,82 @@ int main(int argc, char** argv) {
         bool isNI=(iso_1>0.15 && iso_1<0.50 && iso_2<0.15);
         bool isNN=(iso_1>0.15 && iso_1<0.50 && iso_2>0.15 && iso_2<0.50);
         
-        if (name=="ZJ"){
-            if (sample=="DY" or sample=="DY1" or sample=="DY2" or sample=="DY3" or sample=="DY4"){
-                if (numGenJets==0){
-                    weight = 3.630;
-                    if (year==2017) weight = 2.583;
-                    if (year==2016) weight = 1.509;
-                }
-                else if (numGenJets==1){
-                    weight = 0.6304;
-                    if (year==2017) weight = 0.3269;
-                    if (year==2016) weight = 0.4814;
-                }
-                else if (numGenJets==2){
-                    weight = 0.5528;
-                    if (year==2017) weight = 0.5667;
-                    if (year==2016) weight = 0.4987;
-                }
-                else if (numGenJets==3){
-                    weight = 0.6009;
-                    if (year==2017) weight = 0.5228;
-                    if (year==2016) weight = 0.5113;
-                }
-                else if (numGenJets==4){
-                    weight = 0.8314;
-                    if (year==2017) weight = 0.2199;
-                    if (year==2016) weight = 0.4194;
-                }
+        if (sample=="DY"){
+            if (numGenJets==1){
+                weight = ZJ_w_1jet;
+                if (year==2017) weight = 0.3269;
+                if (year==2016) weight = 0.4814;
             }
-            if (sample=="DYlow" or sample=="DY1low" or sample=="DY2low" or sample=="DY3low" or sample=="DY4low"){
-                if (year==2016){
-                    if (numGenJets==0) weight = 20.64;
-                    else if (numGenJets==1) weight = 0.7822;
-                    else if (numGenJets==2) weight = 0.8491;
-                    else if (numGenJets==3) weight = 0.8178;
-                    else if (numGenJets==4) weight = 0.7536;
-                }
-                if (year==2017) weight = 9.416;
-                if (year==2018) weight = 12.45;
+            else if (numGenJets==2){
+                weight = ZJ_w_2jet;
+                if (year==2017) weight = 0.5667;
+                if (year==2016) weight = 0.4987;
+            }
+            else if (numGenJets==3){
+                weight = ZJ_w_3jet;
+                if (year==2017) weight = 0.5228;
+                if (year==2016) weight = 0.5113;
+            }
+            else if (numGenJets==4){
+                weight = ZJ_w_4jet;
+                if (year==2017) weight = 0.2199;
+                if (year==2016) weight = 0.4194;
+            }
+	    else {
+		weight = ZJ_w_incl;
+                if (year==2017) weight = 2.583;
+                if (year==2016) weight = 1.509;
             }
         }
-        
-        if (name=="WJ"){
-            if (numGenJets==0){
-                weight = 51.81;
-                if (year==2017) weight = 23.74;
-                if (year==2016) weight = 25.72;
+	if (sample=="DY1") weight = ZJ_w_1jet;
+	if (sample=="DY2") weight = ZJ_w_2jet;
+	if (sample=="DY3") weight = ZJ_w_3jet;
+	if (sample=="DY4") weight = ZJ_w_4jet;
+        if (sample=="DYlow"){
+	    weight = luminosity*15810.*ZJ_kfactor/N;
+            if (year==2016){
+                if (numGenJets==0) weight = 20.64;
+                else if (numGenJets==1) weight = 0.7822;
+                else if (numGenJets==2) weight = 0.8491;
+                else if (numGenJets==3) weight = 0.8178;
+                else if (numGenJets==4) weight = 0.7536;
             }
-            else if (numGenJets==1){
-                weight = 9.091;
+        }
+         
+        if (sample=="W"){
+            if (numGenJets==1){
+                weight = WJ_w_1jet;
                 if (year==2017) weight = 3.116;
                 if (year==2016) weight = 5.840;
             }
             else if (numGenJets==2){
-                weight = 4.516;
+                weight = WJ_w_2jet;
                 if (year==2017) weight = 3.024;
                 if (year==2016) weight = 1.814;
             }
             else if (numGenJets==3){
-                weight = 3.090;
+                weight = WJ_w_3jet;
                 if (year==2017) weight = 1.355;
                 if (year==2016) weight = 0.6878;
             }
             else if (numGenJets==4){
-                weight = 3.227;
+                weight = WJ_w_4jet;
                 if (year==2017) weight = 1.119;
                 if (year==2016) weight = 0.7453;
             }
+	    else {
+                weight = WJ_w_incl;
+                if (year==2017) weight = 23.74;
+                if (year==2016) weight = 25.72;
+            }
         }       
- 
-        //if (sample=="embedded" && (gen_match_1==6 or gen_match_2==6)) continue;
+        if (sample=="W1") weight = WJ_w_1jet;
+        if (sample=="W2") weight = WJ_w_2jet;
+        if (sample=="W3") weight = WJ_w_3jet;
+        if (sample=="W4") weight = WJ_w_4jet;
+
         bool is_includedInEmbedded=false;
-        if ((sample!="data_obs" && sample!="embedded" && name!="ggh_htt" && name!="ggh_hww" && name!="qqh_htt" && name!="qqh_hww" && name!="Zh_htt" && name!="Zh_hww" && name!="Wh_htt" && name!="Wh_hww" && name!="tth") && gen_match_1>2 && gen_match_1<6 && gen_match_2>2 && gen_match_2<6) is_includedInEmbedded = true; // remove overlap with embedded samples
+        if ((sample!="data_obs" && sample!="embedded" && sample!="GGHTT" && sample!="GGHWW" && sample!="VBFHTT" && sample!="VBFHWW" && sample!="ZHTT" && sample!="ZHWW" && sample!="WminusHTT" && sample!="WplusHTT" && sample!="WminusHWW" && sample!="WplusHWW" && sample!="ttHnonbb" && sample!="ttHbb") && gen_match_1>2 && gen_match_1<6 && gen_match_2>2 && gen_match_2<6) is_includedInEmbedded = true; // remove overlap with embedded samples
         if (is_includedInEmbedded) continue;
         
         float sf_MC = 1.0;
@@ -394,9 +381,9 @@ int main(int argc, char** argv) {
             else sf_trg = probData/probMC;
             sf_MC *= sf_trg;
             
-            if (name=="ZJ") sf_MC *= zptmass_weight_nom;
+            if(sample=="DY" or sample=="DY1" or sample=="DY2" or sample=="DY3" or sample=="DY4" or sample=="DYlow") sf_MC *= zptmass_weight_nom;
             
-            if (name=="ttbar"){
+            if (sample=="TTTo2L2Nu" or sample=="TTToHadronic" or sample=="TTToSemiLeptonic"){
                 float pttop1=pt_top1;
                 if (pttop1>472) pttop1=472;
                 float pttop2=pt_top2;
@@ -406,7 +393,7 @@ int main(int argc, char** argv) {
             }
             
             sf_MC *= genweight;
-            sf_MC *= LumiWeights_12->weight(npu);
+	    sf_MC *= pileupset->at("Collisions18_UltraLegacy_goldenJSON")->evaluate({npu, "nominal"});
             if (year!=2018) sf_MC *= prefiring_weight;
             
         }
@@ -437,50 +424,31 @@ int main(int argc, char** argv) {
         
         int nbtag20 = 0;
         float bMpt_1 = 0;
-        float bMflavor_1 = 0;
+	float bMeta_1 = 0;
+        int bMflavor_1 = 0;
         float bMpt_2 = 0;
-        float bMflavor_2 = 0;
+	float bMeta_2 = 0;
+        int bMflavor_2 = 0;
         float bscore_thres = 0.2770;
         if (year==2017) bscore_thres = 0.3033;
         if (year==2016) bscore_thres = 0.3093;
         if (bpt_deepflavour_1>20 && bscore_deepflavour_1>bscore_thres && fabs(beta_deepflavour_1)<2.4){
             bMpt_1 = bpt_deepflavour_1;
+	    bMeta_2 = fabs(beta_deepflavour_1);
             bMflavor_1 = bflavour_deepflavour_1;
             nbtag20++;
         }
         if (bpt_deepflavour_2>20 && bscore_deepflavour_2>bscore_thres && fabs(beta_deepflavour_2)<2.4){
             bMpt_2 = bpt_deepflavour_2;
+	    bMeta_2 = fabs(beta_deepflavour_2);
             bMflavor_2 = bflavour_deepflavour_2;
             nbtag20++;
         }
-        //b-tagged jet true flavour to be passed to btag SF reader
-        auto btagflavour_1 = BTagEntry::FLAV_B;
-        if (bflavour_deepflavour_1==5) btagflavour_1 = BTagEntry::FLAV_B;
-        if (bflavour_deepflavour_1==4) btagflavour_1 = BTagEntry::FLAV_C;
-        if (bflavour_deepflavour_1==0) btagflavour_1 = BTagEntry::FLAV_UDSG;
-        auto btagflavour_2 = BTagEntry::FLAV_B;
-        if (bflavour_deepflavour_2==5) btagflavour_2 = BTagEntry::FLAV_B;
-        if (bflavour_deepflavour_2==4) btagflavour_2 = BTagEntry::FLAV_C;
-        if (bflavour_deepflavour_2==0) btagflavour_2 = BTagEntry::FLAV_UDSG;
         
         float weight_btag = 1.0;//no correction if requiring 0 btag
         if (sample!="data_obs" && sample!="embedded"){
-            /*
-            if (nbtag20==1){
-                if (year==2016) weight_btag = GetSF_2016(1, bMpt_1, bMflavor_1, 0);
-                if (year==2017) weight_btag = GetSF_2017(1, bMpt_1, bMflavor_1, 0);
-                if (year==2018) weight_btag = GetSF_2018(1, bMpt_1, bMflavor_1, 0);
-            }
-            if (nbtag20==2){
-                if (year==2016) weight_btag = GetSF_2016(1, bMpt_1, bMflavor_1, 0)*GetSF_2016(1, bMpt_2, bMflavor_2, 0);
-                if (year==2017) weight_btag = GetSF_2017(1, bMpt_1, bMflavor_1, 0)*GetSF_2017(1, bMpt_2, bMflavor_2, 0);
-                if (year==2018) weight_btag = GetSF_2018(1, bMpt_1, bMflavor_1, 0)*GetSF_2018(1, bMpt_2, bMflavor_2, 0);
-            }
-            weight_0btag = bTagEventWeight(nbtag20,bMpt_1,bMflavor_1,bMpt_2,bMflavor_2,1,0,0,year);
-            */
-            
-            if (nbtag20==1) weight_btag = reader.eval_auto_bounds("central", btagflavour_1, fabs(beta_deepflavour_1), bMpt_1, bscore_deepflavour_1);
-            if (nbtag20==2) weight_btag = reader.eval_auto_bounds("central", btagflavour_1, fabs(beta_deepflavour_1), bMpt_1, bscore_deepflavour_1)*reader.eval_auto_bounds("central", btagflavour_2, fabs(beta_deepflavour_2), bMpt_2, bscore_deepflavour_2);
+	    if (nbtag20==1) weight_btag = btaggingset->at("deepJet_shape")->evaluate({"central", bMflavor_1, bMeta_1, bMpt_1, bscore_deepflavour_1});
+	    if (nbtag20==2) weight_btag = btaggingset->at("deepJet_shape")->evaluate({"central", bMflavor_1, bMeta_1, bMpt_1, bscore_deepflavour_1})*btaggingset->at("deepJet_shape")->evaluate({"central", bMflavor_2, bMeta_2, bMpt_2, bscore_deepflavour_2});
         }
         
         float sssf=2.5;
@@ -581,7 +549,3 @@ int main(int argc, char** argv) {
     fout->Close();
     
 } 
-
-
-
-

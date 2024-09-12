@@ -11,7 +11,8 @@ echo "================================================================"
 filename=`echo $1 | awk -F"." '{print $1}'`
 exefilename=${filename}.exe
 rm -f $exefilename
-g++ $1 -o $exefilename `root-config --cflags --glibs` -lRooFit -lRooFitCore 
+#g++ $1 -o $exefilename `root-config --cflags --glibs` -lRooFit -lRooFitCore 
+g++ -g $1 -o $exefilename -I$ROOTSYS/include -L$ROOTSYS/lib `root-config --cflags` `root-config --libs` `correction config --cflags` `correction config --ldflags` -lRooFit -lRooFitCore
 echo ""
 if [ -e $exefilename ]; then 
     echo "====> Created exe file : "
