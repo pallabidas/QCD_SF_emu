@@ -142,7 +142,7 @@ TF1 *M_FR(std::string type, std::string files, std::string num, std::string denu
     t.SetTextSize(0.04);
     if (year==2016) t.DrawLatex(0.55, .96, "2016, 36.3 fb^{-1} (13 TeV)");
     if (year==2017) t.DrawLatex(0.55, .96, "2017, 41.5 fb^{-1} (13 TeV)");
-    if (year==2018) t.DrawLatex(0.55, .96, "2018, 13.6 fb^{-1} (13 TeV)");
+    if (year==2018) t.DrawLatex(0.55, .96, "2018, 59.8 fb^{-1} (13 TeV)");
 /*
     Double_t TauLegParameters[2];
     theFit2->GetParameters(TauLegParameters);

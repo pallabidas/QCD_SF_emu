@@ -1,5 +1,4 @@
 #include <TH2.h>
-#include "btagSF.h"
 #include <TStyle.h>
 #include <TCanvas.h>
 #include <TGraph.h>
@@ -41,6 +40,7 @@ int main(int argc, char** argv) {
     std::string sample = *(argv + 3);
     
     int year=2018;
+    bool preVFP = true;
     if (argc > 1) {
         year = atof(argv[4]);
     }
@@ -51,70 +51,70 @@ int main(int argc, char** argv) {
     TH1F* nbevt = (TH1F*) f_Double->Get("nevents");
     float N = nbevt->GetBinContent(2);
     
-    float xs=1.0; float weight=1.0; float luminosity=36330.0;
-    if (year==2017) luminosity=41530.0;
-    //if (year==2018) luminosity=59740.0;
-    if (year==2018) luminosity=13651.;
+    float xs=1.0; float weight=1.0; float luminosity=59830.0;
+    if (year==2017) luminosity=41480.0;
+    if (year==2016 && preVFP) luminosity=19520.0;
+    if (year==2016 && !preVFP) luminosity=16810.;
 
     // sample stitching: https://twiki.cern.ch/twiki/bin/viewauth/CMS/MCStitching#Stitching_inclusive_with_jet_AN1
 
     float ZJ_kfactor = 1.1258;
-    float ZJ_n_incl = 90027952; float ZJ_xs_incl = 5398.0; float ZJ_w_incl = luminosity*ZJ_xs_incl*ZJ_kfactor/ZJ_n_incl;
-    float ZJ_n_1jet = 47588696; float ZJ_xs_1jet = 876.9; float ZJ_w_1jet = luminosity*ZJ_xs_1jet*ZJ_kfactor/(ZJ_n_1jet + (ZJ_xs_1jet/ZJ_xs_incl)*ZJ_n_incl);
-    float ZJ_n_2jet = 26886572; float ZJ_xs_2jet = 306.4; float ZJ_w_2jet = luminosity*ZJ_xs_2jet*ZJ_kfactor/(ZJ_n_2jet + (ZJ_xs_2jet/ZJ_xs_incl)*ZJ_n_incl);
-    float ZJ_n_3jet = 19961282; float ZJ_xs_3jet = 112.0; float ZJ_w_3jet = luminosity*ZJ_xs_3jet*ZJ_kfactor/(ZJ_n_3jet + (ZJ_xs_3jet/ZJ_xs_incl)*ZJ_n_incl);
-    float ZJ_n_4jet = 8601783; float ZJ_xs_4jet = 44.03; float ZJ_w_4jet = luminosity*ZJ_xs_4jet*ZJ_kfactor/(ZJ_n_4jet + (ZJ_xs_4jet/ZJ_xs_incl)*ZJ_n_incl);
+    float ZJ_n_incl = 91497616; float ZJ_xs_incl = 5398.0; float ZJ_w_incl = luminosity*ZJ_xs_incl*ZJ_kfactor/ZJ_n_incl;
+    float ZJ_n_1jet = 47983120; float ZJ_xs_1jet = 876.9; float ZJ_w_1jet = luminosity*ZJ_xs_1jet*ZJ_kfactor/(ZJ_n_1jet + (ZJ_xs_1jet/ZJ_xs_incl)*ZJ_n_incl);
+    float ZJ_n_2jet = 27398464; float ZJ_xs_2jet = 306.4; float ZJ_w_2jet = luminosity*ZJ_xs_2jet*ZJ_kfactor/(ZJ_n_2jet + (ZJ_xs_2jet/ZJ_xs_incl)*ZJ_n_incl);
+    float ZJ_n_3jet = 20466034; float ZJ_xs_3jet = 112.0; float ZJ_w_3jet = luminosity*ZJ_xs_3jet*ZJ_kfactor/(ZJ_n_3jet + (ZJ_xs_3jet/ZJ_xs_incl)*ZJ_n_incl);
+    float ZJ_n_4jet = 8837555; float ZJ_xs_4jet = 44.03; float ZJ_w_4jet = luminosity*ZJ_xs_4jet*ZJ_kfactor/(ZJ_n_4jet + (ZJ_xs_4jet/ZJ_xs_incl)*ZJ_n_incl);
 
     float WJ_kfactor = 1.1421;
-    float WJ_n_incl = 1196391200; float WJ_xs_incl = 53870.0; float WJ_w_incl = luminosity*WJ_xs_incl*WJ_kfactor/WJ_n_incl;
-    float WJ_n_1jet = 136846340; float WJ_xs_1jet = 8927.0; float WJ_w_1jet = luminosity*WJ_xs_1jet*WJ_kfactor/(WJ_n_1jet + (WJ_xs_1jet/WJ_xs_incl)*WJ_n_incl);
-    float WJ_n_2jet = 56680067000; float WJ_xs_2jet = 2809.0; float WJ_w_2jet = luminosity*WJ_xs_2jet*WJ_kfactor/(WJ_n_2jet + (WJ_xs_2jet/WJ_xs_incl)*WJ_n_incl);
-    float WJ_n_3jet = 19976498; float WJ_xs_3jet = 826.3; float WJ_w_3jet = luminosity*WJ_xs_3jet*WJ_kfactor/(WJ_n_3jet + (WJ_xs_3jet/WJ_xs_incl)*WJ_n_incl);
-    float WJ_n_4jet = 39554320; float WJ_xs_4jet = 544.3;   float WJ_w_4jet = luminosity*WJ_xs_4jet*WJ_kfactor/(WJ_n_4jet + (WJ_xs_4jet/WJ_xs_incl)*WJ_n_incl);
+    float WJ_n_incl = 1199617536; float WJ_xs_incl = 53870.0; float WJ_w_incl = luminosity*WJ_xs_incl*WJ_kfactor/WJ_n_incl;
+    float WJ_n_1jet = 137845136; float WJ_xs_1jet = 8927.0; float WJ_w_1jet = luminosity*WJ_xs_1jet*WJ_kfactor/(WJ_n_1jet + (WJ_xs_1jet/WJ_xs_incl)*WJ_n_incl);
+    float WJ_n_2jet = 57029824512; float WJ_xs_2jet = 2809.0; float WJ_w_2jet = luminosity*WJ_xs_2jet*WJ_kfactor/(WJ_n_2jet + (WJ_xs_2jet/WJ_xs_incl)*WJ_n_incl);
+    float WJ_n_3jet = 20226922; float WJ_xs_3jet = 826.3; float WJ_w_3jet = luminosity*WJ_xs_3jet*WJ_kfactor/(WJ_n_3jet + (WJ_xs_3jet/WJ_xs_incl)*WJ_n_incl);
+    float WJ_n_4jet = 39766600; float WJ_xs_4jet = 544.3;   float WJ_w_4jet = luminosity*WJ_xs_4jet*WJ_kfactor/(WJ_n_4jet + (WJ_xs_4jet/WJ_xs_incl)*WJ_n_incl);
     
     if (sample == "data_obs"){weight = 1.0;}
-    else if(sample == "embedded"){weight = 1.0;}
+    else if(sample == "embedded"){weight = 55484486/nbevt->GetBinContent(1);}
     else if(sample == "DY"){weight = 1.0;}
     else if(sample == "DY1"){weight = 1.0;}
     else if(sample == "DY2"){weight = 1.0;}
     else if(sample == "DY3"){weight = 1.0;}
     else if(sample == "DY4"){weight = 1.0;}
     else if(sample == "DYlow"){weight = 1.0;}
-//    else if(sample == "DY1low"){weight = 1.0;}
-//    else if(sample == "DY2low"){weight = 1.0;}
-//    else if(sample == "DY3low"){weight = 1.0;}
-//    else if(sample == "DY4low"){weight = 1.0;}
+    //else if(sample == "DY1low"){weight = 1.0;}
+    //else if(sample == "DY2low"){weight = 1.0;}
+    //else if(sample == "DY3low"){weight = 1.0;}
+    //else if(sample == "DY4low"){weight = 1.0;}
     else if(sample == "GGHTT"){xs = 48.58*0.0627; weight = luminosity*xs/N;}
     else if(sample == "GGHWW"){xs = 48.58*0.2137*0.3258*0.3258; weight = luminosity*xs/N;}
-    else if(sample == "GGZHLLTT"){xs = 0.1227*0.0627*3*0.033658; weight = luminosity*xs/N;}
-    else if(sample == "GGZHNNTT"){xs = 0.1227*0.0627*0.2000; weight = luminosity*xs/N;}
-    else if(sample == "GGZHQQTT"){xs = 0.1227*0.0627*0.6991; weight = luminosity*xs/N;}
+    //else if(sample == "GGZHLLTT"){xs = 0.1227*0.0627*3*0.033658; weight = luminosity*xs/N;}
+    //else if(sample == "GGZHNNTT"){xs = 0.1227*0.0627*0.2000; weight = luminosity*xs/N;}
+    //else if(sample == "GGZHQQTT"){xs = 0.1227*0.0627*0.6991; weight = luminosity*xs/N;}
     else if(sample == "GGZHWW"){xs = 0.1227*0.2137; weight = luminosity*xs/N;}
-    else if(sample == "ST_tW_antitop"){xs = 35.85; if(year==2016) xs = 35.6; weight = luminosity*xs/N;}
-    else if(sample == "ST_tW_top"){xs = 35.85; if(year==2016) xs = 35.6; weight = luminosity*xs/N;}
-    else if(sample == "ST_t_antitop"){xs = 80.94; if(year==2016) xs = 26.23; weight = luminosity*xs/N;}
-    else if(sample == "ST_t_top"){xs = 136.02; if(year==2016) xs = 44.07; weight = luminosity*xs/N;}
+    else if(sample == "ST_tW_antitop"){xs = 39.65; weight = luminosity*xs/N;}
+    else if(sample == "ST_tW_top"){xs = 39.65; weight = luminosity*xs/N;}
+    else if(sample == "ST_t_antitop"){xs = 80.0; weight = luminosity*xs/N;}
+    else if(sample == "ST_t_top"){xs = 134.2; weight = luminosity*xs/N;}
     else if(sample == "TTTo2L2Nu"){xs = 88.29; weight = luminosity*xs/N;}
     else if(sample == "TTToHadronic"){xs = 377.96; weight = luminosity*xs/N;}
     else if(sample == "TTToSemiLeptonic"){xs = 365.35; weight = luminosity*xs/N;}
     else if(sample == "VBFHTT"){xs = 3.782*0.0627; weight = luminosity*xs/N;}
     else if(sample == "VBFHWW"){xs = 3.782*0.2137*0.3258*0.3258; weight = luminosity*xs/N;}
-    else if(sample == "VVTo2L2Nu"){xs = 13.84; weight = luminosity*xs/N;}//11.95
+    else if(sample == "VVTo2L2Nu"){xs = 14.26; weight = luminosity*xs/N;} //11.91
     else if(sample == "W"){weight = 1.0;}
     else if(sample == "W1"){weight = 1.0;}
     else if(sample == "W2"){weight = 1.0;}
     else if(sample == "W3"){weight = 1.0;}
     else if(sample == "W4"){weight = 1.0;}
-    else if(sample == "WZTo2Q2L"){xs = 5.52; weight = luminosity*xs/N;}//5.595
-    else if(sample == "WZTo3LNu"){xs = 4.43; weight = luminosity*xs/N;}//4.708
+    else if(sample == "WZTo2Q2L"){xs = 6.565; weight = luminosity*xs/N;} //6.419
+    else if(sample == "WZTo3LNu"){xs = 5.257; weight = luminosity*xs/N;} //5.213
     else if(sample == "WminusHTT"){xs = 0.5328*0.0627; weight = luminosity*xs/N;}
     else if(sample == "WminusHWW"){xs = 0.5328*0.2137; weight = luminosity*xs/N;}
     else if(sample == "WplusHTT"){xs = 0.840*0.0627; weight = luminosity*xs/N;}
     else if(sample == "WplusHWW"){xs = 0.840*0.2137; weight = luminosity*xs/N;}
     else if(sample == "ZHTT"){xs = 0.7612*0.0627; weight = luminosity*xs/N;}
     else if(sample == "ZHWW"){xs = 0.7612*0.2137; weight = luminosity*xs/N;}
-    else if(sample == "ZZTo2Q2L"){xs = 3.38; weight = luminosity*xs/N;}//3.22
-    else if(sample == "ZZTo4L"){xs = 1.212; weight = luminosity*xs/N;}
+    else if(sample == "ZZTo2Q2L"){xs = 3.676; weight = luminosity*xs/N;}
+    else if(sample == "ZZTo4L"){xs = 1.325; weight = luminosity*xs/N;}
     else if(sample == "ttHnonbb"){xs = 0.5071*(1-0.5824); weight = luminosity*xs/N;}
     else if(sample == "ttHbb"){xs = 0.5071*0.5824; weight = luminosity*xs/N;}
     else {cout << "Missing sample cross section!!!" << endl; return 0;}
@@ -242,16 +242,23 @@ int main(int argc, char** argv) {
     TH2F* h_NNSS = new TH2F ("","",binnum_1,bins_1,binnum_2,bins_2); h_NNSS->Sumw2();
     
     std::string osssfilename = "out_2018/osss_em_2018.root";
-    //if (year==2016) osssfilename = "out_2016/osss_em_2016.root";
-    //if (year==2017) osssfilename = "out_2017/osss_em_2017.root";
+    if (year==2017) osssfilename = "out_2017/osss_em_2017.root";
+    if (year==2016 && preVFP) osssfilename = "out_2016/osss_em_2016preVFP.root";
+    if (year==2016 && !preVFP) osssfilename = "out_2016/osss_em_2016postVFP.root";
     TFile *fosss= new TFile(osssfilename.c_str(),"r");
     TF1 *osss_0bjet=(TF1*) fosss->Get("OSSS_qcd_0bjet");
     TF1 *osss_bjet=(TF1*) fosss->Get("OSSS_qcd_bjet");
    
     //https://gitlab.cern.ch/cms-nanoAOD/jsonpog-integration/-/tree/master/POG/LUM
     auto pileupset = correction::CorrectionSet::from_file("UL2018_puWeights.json");
+    if (year==2017) pileupset = correction::CorrectionSet::from_file("UL2017_puWeights.json");
+    if (year==2016 && preVFP) pileupset = correction::CorrectionSet::from_file("UL2016preVFP_puWeights.json");
+    if (year==2016 && !preVFP) pileupset = correction::CorrectionSet::from_file("UL2016postVFP_puWeights.json");
     //https://gitlab.cern.ch/cms-btv/btv-json-sf/-/tree/master/data
     auto btaggingset = correction::CorrectionSet::from_file("UL2018_btagging.json");
+    if (year==2017) btaggingset = correction::CorrectionSet::from_file("UL2017_btagging.json");
+    if (year==2016 && preVFP) btaggingset = correction::CorrectionSet::from_file("UL2016preVFP_btagging.json");
+    if (year==2016 && !preVFP) btaggingset = correction::CorrectionSet::from_file("UL2016postVFP_btagging.json");
         
     Int_t nentries_wtn = (Int_t) arbre->GetEntries();
     for (Int_t i = 0; i < nentries_wtn; i++) {
@@ -290,8 +297,8 @@ int main(int argc, char** argv) {
         bool isNI=(iso_1>0.15 && iso_1<0.50 && iso_2<0.15);
         bool isNN=(iso_1>0.15 && iso_1<0.50 && iso_2>0.15 && iso_2<0.50);
         
-        if (sample=="DY"){
-            if (numGenJets==1){
+	if (sample=="DY"){
+	    if (numGenJets==1){
                 weight = ZJ_w_1jet;
                 if (year==2017) weight = 0.3269;
                 if (year==2016) weight = 0.4814;
@@ -312,7 +319,7 @@ int main(int argc, char** argv) {
                 if (year==2016) weight = 0.4194;
             }
 	    else {
-		weight = ZJ_w_incl;
+	        weight = ZJ_w_incl;
                 if (year==2017) weight = 2.583;
                 if (year==2016) weight = 1.509;
             }
@@ -332,8 +339,8 @@ int main(int argc, char** argv) {
             }
         }
          
-        if (sample=="W"){
-            if (numGenJets==1){
+	if (sample=="W"){
+	    if (numGenJets==1){
                 weight = WJ_w_1jet;
                 if (year==2017) weight = 3.116;
                 if (year==2016) weight = 5.840;
