@@ -7,7 +7,7 @@ if __name__ == "__main__":
     parser.add_argument('--year', default=None, help="year")
     options = parser.parse_args()
 
-    lowX=0.18
+    lowX=0.5
     lowY=0.835
     lumi  = ROOT.TPaveText(lowX, lowY+0.06, lowX+0.30, lowY+0.16, "NDC")
     lumi.SetBorderSize(   0 )
@@ -117,6 +117,7 @@ if __name__ == "__main__":
     h_closureOS.SetMaximum(2.0)
     h_closureOS.GetXaxis().SetTitle("p_{T}(#mu) (GeV)")
     h_closureOS.GetYaxis().SetTitle("p_{T}(e) (GeV)")
+    h_closureOS.GetYaxis().SetTitleOffset(1.1)
     h_closureOS.Draw("colz")
     h_closureOS.Draw("TEXTsame")
     lumi.Draw("same")
@@ -127,6 +128,7 @@ if __name__ == "__main__":
     h_correction.SetMaximum(2.0)
     h_correction.GetXaxis().SetTitle("p_{T}(#mu) (GeV)")
     h_correction.GetYaxis().SetTitle("p_{T}(e) (GeV)")
+    h_correction.GetYaxis().SetTitleOffset(1.1)
     h_correction.Draw("colz")
     h_correction.Draw("TEXTsame")
     lumi.Draw("same")

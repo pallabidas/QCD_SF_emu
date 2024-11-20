@@ -436,9 +436,10 @@ int main(int argc, char** argv) {
         float bMpt_2 = 0;
 	float bMeta_2 = 0;
         int bMflavor_2 = 0;
-        float bscore_thres = 0.2770;
-        if (year==2017) bscore_thres = 0.3033;
-        if (year==2016) bscore_thres = 0.3093;
+        float bscore_thres = 0.2783;
+        if (year==2017) bscore_thres = 0.3040;
+        if (year==2016 && preVFP) bscore_thres = 0.2598;
+	if (year==2016 && !preVFP) bscore_thres = 0.2489;
         if (bpt_deepflavour_1>20 && bscore_deepflavour_1>bscore_thres && fabs(beta_deepflavour_1)<2.4){
             bMpt_1 = bpt_deepflavour_1;
 	    bMeta_2 = fabs(beta_deepflavour_1);
