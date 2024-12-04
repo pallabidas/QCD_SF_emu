@@ -132,17 +132,17 @@ TF1 *M_FR(std::string type, std::string files, std::string num, std::string denu
     TGraph_FR->SetTitle("");
     TGraph_FR->Draw("PAE");
     TGraph_FR->SetLineWidth(3);
-    std::string outNaming = "out_2016/fit2016_" + name + ".png";
-    if (year==2017) outNaming = "out_2017/fit2017_" + name + ".png";
-    if (year==2018) outNaming = "out_2018/fit2018_" + name + ".png";
+    std::string outNaming = "out_2016/fit2016_" + name + ".pdf";
+    if (year==2017) outNaming = "out_2017/fit2017_" + name + ".pdf";
+    if (year==2018) outNaming = "out_2018/fit2018_" + name + ".pdf";
     TLatex t = TLatex();
     t.SetNDC();
     t.SetTextFont(42);
     t.SetTextAlign(12);
     t.SetTextSize(0.04);
-    if (year==2016) t.DrawLatex(0.55, .96, "2016, 36.3 fb^{-1} (13 TeV)");
-    if (year==2017) t.DrawLatex(0.55, .96, "2017, 41.5 fb^{-1} (13 TeV)");
-    if (year==2018) t.DrawLatex(0.55, .96, "2018, 59.8 fb^{-1} (13 TeV)");
+    if (year==2016) t.DrawLatex(0.52, .96, "2016, 36.3 fb^{-1} (13 TeV)");
+    if (year==2017) t.DrawLatex(0.52, .96, "2017, 41.5 fb^{-1} (13 TeV)");
+    if (year==2018) t.DrawLatex(0.52, .96, "2018, 59.8 fb^{-1} (13 TeV)");
 /*
     Double_t TauLegParameters[2];
     theFit2->GetParameters(TauLegParameters);
@@ -223,7 +223,7 @@ TF1 *M_FR(std::string type, std::string files, std::string num, std::string denu
     theFit2sym->Draw("SAME");
     theFit2sym->SetLineColor(kViolet+1);
    
-    TLegend *l = new TLegend(0.35, 0.74, 0.7, 0.89, NULL, "brNDC");
+    TLegend *l = new TLegend(0.15, 0.74, 0.7, 0.89, NULL, "brNDC");
     l->SetBorderSize(0);
     l->SetFillColor(0);
     l->SetTextSize(.03);
