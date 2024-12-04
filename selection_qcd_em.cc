@@ -59,21 +59,31 @@ int main(int argc, char** argv) {
     // sample stitching: https://twiki.cern.ch/twiki/bin/viewauth/CMS/MCStitching#Stitching_inclusive_with_jet_AN1
 
     float ZJ_kfactor = 1.1258;
-    float ZJ_n_incl = 91497616; float ZJ_xs_incl = 5398.0; float ZJ_w_incl = luminosity*ZJ_xs_incl*ZJ_kfactor/ZJ_n_incl;
-    float ZJ_n_1jet = 47983120; float ZJ_xs_1jet = 876.9; float ZJ_w_1jet = luminosity*ZJ_xs_1jet*ZJ_kfactor/(ZJ_n_1jet + (ZJ_xs_1jet/ZJ_xs_incl)*ZJ_n_incl);
-    float ZJ_n_2jet = 27398464; float ZJ_xs_2jet = 306.4; float ZJ_w_2jet = luminosity*ZJ_xs_2jet*ZJ_kfactor/(ZJ_n_2jet + (ZJ_xs_2jet/ZJ_xs_incl)*ZJ_n_incl);
-    float ZJ_n_3jet = 20466034; float ZJ_xs_3jet = 112.0; float ZJ_w_3jet = luminosity*ZJ_xs_3jet*ZJ_kfactor/(ZJ_n_3jet + (ZJ_xs_3jet/ZJ_xs_incl)*ZJ_n_incl);
-    float ZJ_n_4jet = 8837555; float ZJ_xs_4jet = 44.03; float ZJ_w_4jet = luminosity*ZJ_xs_4jet*ZJ_kfactor/(ZJ_n_4jet + (ZJ_xs_4jet/ZJ_xs_incl)*ZJ_n_incl);
+    float ZJ_n_incl = 91497616; if (year==2017) ZJ_n_incl = 84051608;
+    float ZJ_xs_incl = 5398.0; float ZJ_w_incl = luminosity*ZJ_xs_incl*ZJ_kfactor/ZJ_n_incl;
+    float ZJ_n_1jet = 47983120; if (year==2017) ZJ_n_1jet = 66063784;
+    float ZJ_xs_1jet = 876.9; float ZJ_w_1jet = luminosity*ZJ_xs_1jet*ZJ_kfactor/(ZJ_n_1jet + (ZJ_xs_1jet/ZJ_xs_incl)*ZJ_n_incl);
+    float ZJ_n_2jet = 27398464; if (year==2017) ZJ_n_2jet = 27099642;
+    float ZJ_xs_2jet = 306.4; float ZJ_w_2jet = luminosity*ZJ_xs_2jet*ZJ_kfactor/(ZJ_n_2jet + (ZJ_xs_2jet/ZJ_xs_incl)*ZJ_n_incl);
+    float ZJ_n_3jet = 20466034; if (year==2017) ZJ_n_3jet = 20165688;
+    float ZJ_xs_3jet = 112.0; float ZJ_w_3jet = luminosity*ZJ_xs_3jet*ZJ_kfactor/(ZJ_n_3jet + (ZJ_xs_3jet/ZJ_xs_incl)*ZJ_n_incl);
+    float ZJ_n_4jet = 8837555; if (year==2017) ZJ_n_4jet = 11315390;
+    float ZJ_xs_4jet = 44.03; float ZJ_w_4jet = luminosity*ZJ_xs_4jet*ZJ_kfactor/(ZJ_n_4jet + (ZJ_xs_4jet/ZJ_xs_incl)*ZJ_n_incl);
 
-    float WJ_kfactor = 1.1421;
-    float WJ_n_incl = 1199617536; float WJ_xs_incl = 53870.0; float WJ_w_incl = luminosity*WJ_xs_incl*WJ_kfactor/WJ_n_incl;
-    float WJ_n_1jet = 137845136; float WJ_xs_1jet = 8927.0; float WJ_w_1jet = luminosity*WJ_xs_1jet*WJ_kfactor/(WJ_n_1jet + (WJ_xs_1jet/WJ_xs_incl)*WJ_n_incl);
-    float WJ_n_2jet = 57029824512; float WJ_xs_2jet = 2809.0; float WJ_w_2jet = luminosity*WJ_xs_2jet*WJ_kfactor/(WJ_n_2jet + (WJ_xs_2jet/WJ_xs_incl)*WJ_n_incl);
-    float WJ_n_3jet = 20226922; float WJ_xs_3jet = 826.3; float WJ_w_3jet = luminosity*WJ_xs_3jet*WJ_kfactor/(WJ_n_3jet + (WJ_xs_3jet/WJ_xs_incl)*WJ_n_incl);
-    float WJ_n_4jet = 39766600; float WJ_xs_4jet = 544.3;   float WJ_w_4jet = luminosity*WJ_xs_4jet*WJ_kfactor/(WJ_n_4jet + (WJ_xs_4jet/WJ_xs_incl)*WJ_n_incl);
+    //float WJ_kfactor = 1.1421;
+    //float WJ_n_incl = 1199617536; if (year==2017) WJ_n_incl = 1021311744;
+    //float WJ_xs_incl = 53870.0; float WJ_w_incl = luminosity*WJ_xs_incl*WJ_kfactor/WJ_n_incl;
+    //float WJ_n_1jet = 137845136; if (year==2017) WJ_n_1jet = 136037040;
+    //float WJ_xs_1jet = 8927.0; float WJ_w_1jet = luminosity*WJ_xs_1jet*WJ_kfactor/(WJ_n_1jet + (WJ_xs_1jet/WJ_xs_incl)*WJ_n_incl);
+    //float WJ_n_2jet = 57029824512; if (year==2017) WJ_n_2jet = 39398328;
+    //float WJ_xs_2jet = 2809.0; float WJ_w_2jet = luminosity*WJ_xs_2jet*WJ_kfactor/(WJ_n_2jet + (WJ_xs_2jet/WJ_xs_incl)*WJ_n_incl);
+    //float WJ_n_3jet = 20226922; if (year==2017) WJ_n_3jet = 19919586;
+    //float WJ_xs_3jet = 826.3; float WJ_w_3jet = luminosity*WJ_xs_3jet*WJ_kfactor/(WJ_n_3jet + (WJ_xs_3jet/WJ_xs_incl)*WJ_n_incl);
+    //float WJ_n_4jet = 39766600; if (year==2017) WJ_n_4jet = 61149401088;
+    //float WJ_xs_4jet = 544.3; float WJ_w_4jet = luminosity*WJ_xs_4jet*WJ_kfactor/(WJ_n_4jet + (WJ_xs_4jet/WJ_xs_incl)*WJ_n_incl);
     
     if (sample == "data_obs"){weight = 1.0;}
-    else if(sample == "embedded"){weight = 55484486/nbevt->GetBinContent(1);}
+    else if(sample == "embedded"){weight = 55484486/nbevt->GetBinContent(1); if (year==2017) weight = 43073709/nbevt->GetBinContent(1);}
     else if(sample == "DY"){weight = 1.0;}
     else if(sample == "DY1"){weight = 1.0;}
     else if(sample == "DY2"){weight = 1.0;}
@@ -89,7 +99,7 @@ int main(int argc, char** argv) {
     //else if(sample == "GGZHLLTT"){xs = 0.1227*0.0627*3*0.033658; weight = luminosity*xs/N;}
     //else if(sample == "GGZHNNTT"){xs = 0.1227*0.0627*0.2000; weight = luminosity*xs/N;}
     //else if(sample == "GGZHQQTT"){xs = 0.1227*0.0627*0.6991; weight = luminosity*xs/N;}
-    else if(sample == "GGZHWW"){xs = 0.1227*0.2137; weight = luminosity*xs/N;}
+    //else if(sample == "GGZHWW"){xs = 0.1227*0.2137; weight = luminosity*xs/N;}
     else if(sample == "ST_tW_antitop"){xs = 39.65; weight = luminosity*xs/N;}
     else if(sample == "ST_tW_top"){xs = 39.65; weight = luminosity*xs/N;}
     else if(sample == "ST_t_antitop"){xs = 80.0; weight = luminosity*xs/N;}
@@ -100,11 +110,12 @@ int main(int argc, char** argv) {
     else if(sample == "VBFHTT"){xs = 3.782*0.0627; weight = luminosity*xs/N;}
     else if(sample == "VBFHWW"){xs = 3.782*0.2137*0.3258*0.3258; weight = luminosity*xs/N;}
     else if(sample == "VVTo2L2Nu"){xs = 14.26; weight = luminosity*xs/N;} //11.91
-    else if(sample == "W"){weight = 1.0;}
-    else if(sample == "W1"){weight = 1.0;}
-    else if(sample == "W2"){weight = 1.0;}
-    else if(sample == "W3"){weight = 1.0;}
-    else if(sample == "W4"){weight = 1.0;}
+    else if(sample == "W"){xs = 61526.7; weight = luminosity*xs/N;} //NNLO xsec
+    //else if(sample == "W"){weight = 1.0;}
+    //else if(sample == "W1"){weight = 1.0;}
+    //else if(sample == "W2"){weight = 1.0;}
+    //else if(sample == "W3"){weight = 1.0;}
+    //else if(sample == "W4"){weight = 1.0;}
     else if(sample == "WZTo2Q2L"){xs = 6.565; weight = luminosity*xs/N;} //6.419
     else if(sample == "WZTo3LNu"){xs = 5.257; weight = luminosity*xs/N;} //5.213
     else if(sample == "WminusHTT"){xs = 0.5328*0.0627; weight = luminosity*xs/N;}
@@ -285,13 +296,13 @@ int main(int argc, char** argv) {
         if (!triggerMu8E23 && !triggerMu23E12) continue;
         
         if (fabs(eta_1)>2.4 or fabs(eta_2)>2.4) continue;
-        
+
         TLorentzVector myele;
         myele.SetPtEtaPhiM(pt_1,eta_1,phi_1,m_1);
         TLorentzVector mymu;
         mymu.SetPtEtaPhiM(pt_2,eta_2,phi_2,m_2);
         if (mymu.DeltaR(myele)<0.3) continue;
-        
+
         //bool isII=(iso_1<0.15 && iso_2<0.15);
         bool isIN=(iso_1<0.15 && iso_2>0.15 && iso_2<0.50);
         bool isNI=(iso_1>0.15 && iso_1<0.50 && iso_2<0.15);
@@ -300,27 +311,22 @@ int main(int argc, char** argv) {
 	if (sample=="DY"){
 	    if (numGenJets==1){
                 weight = ZJ_w_1jet;
-                if (year==2017) weight = 0.3269;
                 if (year==2016) weight = 0.4814;
             }
             else if (numGenJets==2){
                 weight = ZJ_w_2jet;
-                if (year==2017) weight = 0.5667;
                 if (year==2016) weight = 0.4987;
             }
             else if (numGenJets==3){
                 weight = ZJ_w_3jet;
-                if (year==2017) weight = 0.5228;
                 if (year==2016) weight = 0.5113;
             }
             else if (numGenJets==4){
                 weight = ZJ_w_4jet;
-                if (year==2017) weight = 0.2199;
                 if (year==2016) weight = 0.4194;
             }
 	    else {
 	        weight = ZJ_w_incl;
-                if (year==2017) weight = 2.583;
                 if (year==2016) weight = 1.509;
             }
         }
@@ -339,42 +345,37 @@ int main(int argc, char** argv) {
             }
         }
          
-	if (sample=="W"){
-	    if (numGenJets==1){
-                weight = WJ_w_1jet;
-                if (year==2017) weight = 3.116;
-                if (year==2016) weight = 5.840;
-            }
-            else if (numGenJets==2){
-                weight = WJ_w_2jet;
-                if (year==2017) weight = 3.024;
-                if (year==2016) weight = 1.814;
-            }
-            else if (numGenJets==3){
-                weight = WJ_w_3jet;
-                if (year==2017) weight = 1.355;
-                if (year==2016) weight = 0.6878;
-            }
-            else if (numGenJets==4){
-                weight = WJ_w_4jet;
-                if (year==2017) weight = 1.119;
-                if (year==2016) weight = 0.7453;
-            }
-	    else {
-                weight = WJ_w_incl;
-                if (year==2017) weight = 23.74;
-                if (year==2016) weight = 25.72;
-            }
-        }       
-        if (sample=="W1") weight = WJ_w_1jet;
-        if (sample=="W2") weight = WJ_w_2jet;
-        if (sample=="W3") weight = WJ_w_3jet;
-        if (sample=="W4") weight = WJ_w_4jet;
+	//if (sample=="W"){
+	//    if (numGenJets==1){
+        //        weight = WJ_w_1jet;
+        //        if (year==2016) weight = 5.840;
+        //    }
+        //    else if (numGenJets==2){
+        //        weight = WJ_w_2jet;
+        //        if (year==2016) weight = 1.814;
+        //    }
+        //    else if (numGenJets==3){
+        //        weight = WJ_w_3jet;
+        //        if (year==2016) weight = 0.6878;
+        //    }
+        //    else if (numGenJets==4){
+        //        weight = WJ_w_4jet;
+        //        if (year==2016) weight = 0.7453;
+        //    }
+	//    else {
+        //        weight = WJ_w_incl;
+        //        if (year==2016) weight = 25.72;
+        //    }
+        //}       
+        //if (sample=="W1") weight = WJ_w_1jet;
+        //if (sample=="W2") weight = WJ_w_2jet;
+        //if (sample=="W3") weight = WJ_w_3jet;
+        //if (sample=="W4") weight = WJ_w_4jet;
 
         bool is_includedInEmbedded=false;
         if ((sample!="data_obs" && sample!="embedded" && sample!="GGHTT" && sample!="GGHWW" && sample!="VBFHTT" && sample!="VBFHWW" && sample!="ZHTT" && sample!="ZHWW" && sample!="WminusHTT" && sample!="WplusHTT" && sample!="WminusHWW" && sample!="WplusHWW" && sample!="ttHnonbb" && sample!="ttHbb") && gen_match_1>2 && gen_match_1<6 && gen_match_2>2 && gen_match_2<6) is_includedInEmbedded = true; // remove overlap with embedded samples
         if (is_includedInEmbedded) continue;
-        
+
         float sf_MC = 1.0;
         
         if (sample!="data_obs" && sample!="embedded"){
@@ -400,7 +401,9 @@ int main(int argc, char** argv) {
             }
             
             sf_MC *= genweight;
-	    sf_MC *= pileupset->at("Collisions18_UltraLegacy_goldenJSON")->evaluate({npu, "nominal"});
+	    if (year == 2018) sf_MC *= pileupset->at("Collisions18_UltraLegacy_goldenJSON")->evaluate({npu, "nominal"});
+	    if (year == 2017) sf_MC *= pileupset->at("Collisions17_UltraLegacy_goldenJSON")->evaluate({npu, "nominal"});
+	    if (year == 2016) sf_MC *= pileupset->at("Collisions16_UltraLegacy_goldenJSON")->evaluate({npu, "nominal"});
             if (year!=2018) sf_MC *= prefiring_weight;
             
         }
@@ -416,10 +419,10 @@ int main(int argc, char** argv) {
             
             float probData = m_trg_8_ic_data*e_trg_23_ic_data*int(triggerMu8E23)+m_trg_23_ic_data*e_trg_12_ic_data*int(triggerMu23E12)-e_trg_23_ic_data*m_trg_23_ic_data*int(triggerMu8E23 && triggerMu23E12);
             float probEmbedded = m_trg_8_ic_embed*e_trg_23_ic_embed*int(triggerMu8E23)+m_trg_23_ic_embed*e_trg_12_ic_embed*int(triggerMu23E12)-e_trg_23_ic_embed*m_trg_23_ic_embed*int(triggerMu8E23 && triggerMu23E12);
-            if (year==2017){
-                probData = e_trg_23_ic_data*int(triggerMu8E23)+m_trg_23_ic_data*e_trg_12_ic_data*int(triggerMu23E12)-e_trg_23_ic_data*m_trg_23_ic_data*int(triggerMu8E23 && triggerMu23E12);
-                probEmbedded = e_trg_23_ic_embed*int(triggerMu8E23)+m_trg_23_ic_embed*e_trg_12_ic_embed*int(triggerMu23E12)-e_trg_23_ic_embed*m_trg_23_ic_embed*int(triggerMu8E23 && triggerMu23E12);
-            }
+            //if (year==2017){
+            //    probData = e_trg_23_ic_data*int(triggerMu8E23)+m_trg_23_ic_data*e_trg_12_ic_data*int(triggerMu23E12)-e_trg_23_ic_data*m_trg_23_ic_data*int(triggerMu8E23 && triggerMu23E12);
+            //    probEmbedded = e_trg_23_ic_embed*int(triggerMu8E23)+m_trg_23_ic_embed*e_trg_12_ic_embed*int(triggerMu23E12)-e_trg_23_ic_embed*m_trg_23_ic_embed*int(triggerMu8E23 && triggerMu23E12);
+            //}
             float sf_trg = 1.0;
             if (probEmbedded==0) sf_trg=1.0;
             else sf_trg = probData/probEmbedded;
@@ -463,7 +466,7 @@ int main(int argc, char** argv) {
         if (nbtag20==0) sssf = osss_0bjet->Eval(myele.DeltaR(mymu));
         else sssf = osss_bjet->Eval(myele.DeltaR(mymu));
         if (sssf<0 or sssf>10) sssf = 0;
-        
+
         if (nbtag20==0){
             if (isIN && q_1*q_2<0)
                 h0_INOS->Fill(myele.DeltaR(mymu),weight_corr);
