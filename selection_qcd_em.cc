@@ -40,7 +40,7 @@ int main(int argc, char** argv) {
     std::string sample = *(argv + 3);
     
     int year=2018;
-    bool preVFP = true;
+    bool preVFP = false;
     if (argc > 1) {
         year = atof(argv[4]);
     }
@@ -54,20 +54,20 @@ int main(int argc, char** argv) {
     float xs=1.0; float weight=1.0; float luminosity=59830.0;
     if (year==2017) luminosity=41480.0;
     if (year==2016 && preVFP) luminosity=19520.0;
-    if (year==2016 && !preVFP) luminosity=16810.;
+    if (year==2016 && !preVFP) luminosity=16810.0;
 
     // sample stitching: https://twiki.cern.ch/twiki/bin/viewauth/CMS/MCStitching#Stitching_inclusive_with_jet_AN1
 
     float ZJ_kfactor = 1.1258;
-    float ZJ_n_incl = 91497616; if (year==2017) ZJ_n_incl = 84051608;
+    float ZJ_n_incl = 96233352; if (year==2017) ZJ_n_incl = 103344952; if (year==2016 && preVFP) ZJ_n_incl = 95170528; if (year==2016 && !preVFP) ZJ_n_incl = 82448552;
     float ZJ_xs_incl = 5398.0; float ZJ_w_incl = luminosity*ZJ_xs_incl*ZJ_kfactor/ZJ_n_incl;
-    float ZJ_n_1jet = 47983120; if (year==2017) ZJ_n_1jet = 66063784;
+    float ZJ_n_1jet = 60368976; if (year==2017) ZJ_n_1jet = 66063776; if (year==2016 && preVFP) ZJ_n_1jet = 31654292; if (year==2016 && !preVFP) ZJ_n_1jet = 31570466;
     float ZJ_xs_1jet = 876.9; float ZJ_w_1jet = luminosity*ZJ_xs_1jet*ZJ_kfactor/(ZJ_n_1jet + (ZJ_xs_1jet/ZJ_xs_incl)*ZJ_n_incl);
-    float ZJ_n_2jet = 27398464; if (year==2017) ZJ_n_2jet = 27099642;
+    float ZJ_n_2jet = 27494376; if (year==2017) ZJ_n_2jet = 27099644; if (year==2016 && preVFP) ZJ_n_2jet = 11896262; if (year==2016 && !preVFP) ZJ_n_1jet = 14161371;
     float ZJ_xs_2jet = 306.4; float ZJ_w_2jet = luminosity*ZJ_xs_2jet*ZJ_kfactor/(ZJ_n_2jet + (ZJ_xs_2jet/ZJ_xs_incl)*ZJ_n_incl);
-    float ZJ_n_3jet = 20466034; if (year==2017) ZJ_n_3jet = 20165688;
+    float ZJ_n_3jet = 20425328; if (year==2017) ZJ_n_3jet = 20165684; if (year==2016 && preVFP) ZJ_n_3jet = 9460253; if (year==2016 && !preVFP) ZJ_n_3jet = 9148621;
     float ZJ_xs_3jet = 112.0; float ZJ_w_3jet = luminosity*ZJ_xs_3jet*ZJ_kfactor/(ZJ_n_3jet + (ZJ_xs_3jet/ZJ_xs_incl)*ZJ_n_incl);
-    float ZJ_n_4jet = 8837555; if (year==2017) ZJ_n_4jet = 11315390;
+    float ZJ_n_4jet = 8885353; if (year==2017) ZJ_n_4jet = 10817550; if (year==2016 && preVFP) ZJ_n_4jet = 4655680; if (year==2016 && !preVFP) ZJ_n_4jet = 4181956;
     float ZJ_xs_4jet = 44.03; float ZJ_w_4jet = luminosity*ZJ_xs_4jet*ZJ_kfactor/(ZJ_n_4jet + (ZJ_xs_4jet/ZJ_xs_incl)*ZJ_n_incl);
 
     //float WJ_kfactor = 1.1421;
@@ -83,7 +83,7 @@ int main(int argc, char** argv) {
     //float WJ_xs_4jet = 544.3; float WJ_w_4jet = luminosity*WJ_xs_4jet*WJ_kfactor/(WJ_n_4jet + (WJ_xs_4jet/WJ_xs_incl)*WJ_n_incl);
     
     if (sample == "data_obs"){weight = 1.0;}
-    else if(sample == "embedded"){weight = 55484486/nbevt->GetBinContent(1); if (year==2017) weight = 43073709/nbevt->GetBinContent(1);}
+    else if(sample == "embedded"){weight = 1.0; if (year==2018) weight = 55484486/nbevt->GetBinContent(1); if (year==2017) weight = 43073709/nbevt->GetBinContent(1); }
     else if(sample == "DY"){weight = 1.0;}
     else if(sample == "DY1"){weight = 1.0;}
     else if(sample == "DY2"){weight = 1.0;}
@@ -241,10 +241,12 @@ int main(int argc, char** argv) {
     
     TH2F* closureOS = new TH2F("closureOS","closureOS",binnum_ptm,bins_ptm,binnum_pte,bins_pte); closureOS->Sumw2();
     TH2F* closureSS = new TH2F("closureSS","closureSS",binnum_ptm,bins_ptm,binnum_pte,bins_pte); closureSS->Sumw2();
-    
-    float bins_1[] = {13,20,24,35,100};
+   
+    float bins_1[] = {13,20,24,35,100}; 
+    //float bins_1[] = {13,20,24,30,100};  // for 2016
     int  binnum_1 = sizeof(bins_1)/sizeof(Float_t) - 1;
     float bins_2[] = {13,20,24,35,100};
+    //float bins_2[] = {13,20,24,30,100};  // for 2016
     int  binnum_2 = sizeof(bins_2)/sizeof(Float_t) - 1;
     
     TH2F* h_NIOS = new TH2F ("","",binnum_1,bins_1,binnum_2,bins_2); h_NIOS->Sumw2();
@@ -254,8 +256,7 @@ int main(int argc, char** argv) {
     
     std::string osssfilename = "out_2018/osss_em_2018.root";
     if (year==2017) osssfilename = "out_2017/osss_em_2017.root";
-    if (year==2016 && preVFP) osssfilename = "out_2016/osss_em_2016preVFP.root";
-    if (year==2016 && !preVFP) osssfilename = "out_2016/osss_em_2016postVFP.root";
+    if (year==2016) osssfilename = "out_2016/osss_em_2016.root";
     TFile *fosss= new TFile(osssfilename.c_str(),"r");
     TF1 *osss_0bjet=(TF1*) fosss->Get("OSSS_qcd_0bjet");
     TF1 *osss_bjet=(TF1*) fosss->Get("OSSS_qcd_bjet");
@@ -311,23 +312,18 @@ int main(int argc, char** argv) {
 	if (sample=="DY"){
 	    if (numGenJets==1){
                 weight = ZJ_w_1jet;
-                if (year==2016) weight = 0.4814;
             }
             else if (numGenJets==2){
                 weight = ZJ_w_2jet;
-                if (year==2016) weight = 0.4987;
             }
             else if (numGenJets==3){
                 weight = ZJ_w_3jet;
-                if (year==2016) weight = 0.5113;
             }
             else if (numGenJets==4){
                 weight = ZJ_w_4jet;
-                if (year==2016) weight = 0.4194;
             }
 	    else {
 	        weight = ZJ_w_incl;
-                if (year==2016) weight = 1.509;
             }
         }
 	if (sample=="DY1") weight = ZJ_w_1jet;
@@ -336,13 +332,6 @@ int main(int argc, char** argv) {
 	if (sample=="DY4") weight = ZJ_w_4jet;
         if (sample=="DYlow"){
 	    weight = luminosity*15810.*ZJ_kfactor/N;
-            if (year==2016){
-                if (numGenJets==0) weight = 20.64;
-                else if (numGenJets==1) weight = 0.7822;
-                else if (numGenJets==2) weight = 0.8491;
-                else if (numGenJets==3) weight = 0.8178;
-                else if (numGenJets==4) weight = 0.7536;
-            }
         }
          
 	//if (sample=="W"){
@@ -412,7 +401,7 @@ int main(int argc, char** argv) {
         
         if (sample=="embedded"){
             
-            if (year==2016 && genweight>1.0) continue;
+            //if (year==2016 && genweight>1.0) continue;
             sf_emb *= e_trk_embed_ratio * e_idiso_ic_embed_ratio * m_trk_ratio * m_idiso_ic_embed_ratio;
             sf_emb *= genweight;
             sf_emb *= m_sel_trg_ic_ratio * m_sel_id_ic_ratio_1 * m_sel_id_ic_ratio_2;

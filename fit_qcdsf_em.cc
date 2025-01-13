@@ -62,6 +62,14 @@ double fitFunction(double x, double par0, double par1) {
 }
 
 Double_t fitFunc_Exp3Par(Double_t *x, Double_t *par) {
+    //if (x[0] > 1.3 && x[0] < 1.8) { // to ignore the 0 entry bin in 2016 pre-VFP
+    //    TF1::RejectPoint();
+    //    return 0;
+    //}
+    //if (x[0] > 1.3 && x[0] < 2.3) { // to ignore the 0 entry bin in 2016 post-VFP
+    //    TF1::RejectPoint();
+    //    return 0;
+    //}
     return par[0] + par[1]* (x[0]-3.0);
 }
 
@@ -73,6 +81,14 @@ Double_t fitFunc_Line2Par2(Double_t *x, Double_t *par) {
     //return par[0] + par[1] * (x[0]-4.) ;//+ par[2] * x[0]* x[0] + par[3] * x[0]* x[0] *x[0];
     //return par[0] + par[1]*(TMath::Exp(par[2] * x[0]-par[3]));
     //return par[0] + par[1]*(TMath::Landau((x[0]-1),par[2],par[3],0));
+    //if (x[0] > 1.3 && x[0] < 1.8) { // to ignore the 0 entry bin in 2016 pre-VFP
+    //    TF1::RejectPoint();
+    //    return 0;
+    //}
+    //if (x[0] > 1.3 && x[0] < 2.3) { // to ignore the 0 entry bin in 2016 post-VFP
+    //    TF1::RejectPoint();
+    //    return 0;
+    //}
     return par[0] + par[1]*x[0]+par[2]*x[0]*x[0]+par[3]*x[0]*x[0]*x[0];
 }
 
@@ -117,6 +133,22 @@ TF1 *M_FR(std::string type, std::string files, std::string num, std::string denu
         theFit->SetParameter(3, -0.002);
         //theFit->SetParameter(4, -0.002);
     }
+    //else {  // for 2016 pre-VFP (FCN 1.42941, 5.42602)
+    //    theFit->FixParameter(0, 2.84664);
+    //    theFit->FixParameter(1, -2.69774);
+    //    theFit->FixParameter(2, 1.11066);
+    //    theFit->FixParameter(3, -0.133325);
+    //    theFit2->FixParameter(0, 1.15756);
+    //    theFit2->FixParameter(1, -0.0830792);
+    //}
+    else { // for 2016 post-VFP (FCN 2.2854,  17.7659)
+        theFit->FixParameter(0, 5.27659);
+        theFit->FixParameter(1, -6.63006);
+        theFit->FixParameter(2, 2.60069);
+        theFit->FixParameter(3, -0.296494);
+	theFit2->FixParameter(0, 0.826899);
+	theFit2->FixParameter(1, 0.0108449);
+    }
     
     TGraph_FR->Fit("theFit", "R0");
     TGraph_FR->Fit("theFit2", "R0");
@@ -140,7 +172,8 @@ TF1 *M_FR(std::string type, std::string files, std::string num, std::string denu
     t.SetTextFont(42);
     t.SetTextAlign(12);
     t.SetTextSize(0.04);
-    if (year==2016) t.DrawLatex(0.52, .96, "2016, 36.3 fb^{-1} (13 TeV)");
+    //if (year==2016) t.DrawLatex(0.38, .96, "2016 pre-VFP, 19.5 fb^{-1} (13 TeV)");
+    if (year==2016) t.DrawLatex(0.36, .96, "2016 post-VFP, 16.8 fb^{-1} (13 TeV)");
     if (year==2017) t.DrawLatex(0.52, .96, "2017, 41.5 fb^{-1} (13 TeV)");
     if (year==2018) t.DrawLatex(0.52, .96, "2018, 59.8 fb^{-1} (13 TeV)");
 /*

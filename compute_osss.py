@@ -8,6 +8,9 @@ if __name__ == "__main__":
     options = parser.parse_args()
 
     lowX=0.5
+    if options.year=="2016":
+        #lowX=0.35
+        lowX=0.34
     lowY=0.835
     lumi  = ROOT.TPaveText(lowX, lowY+0.06, lowX+0.30, lowY+0.16, "NDC")
     lumi.SetBorderSize(   0 )
@@ -21,7 +24,8 @@ if __name__ == "__main__":
     if options.year=="2017":
         lumi.AddText("2017, 41.5 fb^{-1} (13 TeV)")
     if options.year=="2016":
-        lumi.AddText("2016, 36.3 fb^{-1} (13 TeV)")
+        #lumi.AddText("2016 pre-VFP, 19.5 fb^{-1} (13 TeV)")
+        lumi.AddText("2016 post-VFP, 16.8 fb^{-1} (13 TeV)")
 
     lowX=0.18
     lowY=0.70
