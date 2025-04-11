@@ -38,12 +38,7 @@ int main(int argc, char** argv) {
     std::string input = *(argv + 1);
     std::string output = *(argv + 2);
     std::string sample = *(argv + 3);
-    
-    int year=2018;
-    bool preVFP = false;
-    if (argc > 1) {
-        year = atof(argv[4]);
-    }
+    std::string year = *(argv + 4);
     
     TFile *f_Double = new TFile(input.c_str());
     cout<<"XXXXXXXXXXXXX "<<input.c_str()<<" XXXXXXXXXXXX"<<endl;
@@ -52,22 +47,24 @@ int main(int argc, char** argv) {
     float N = nbevt->GetBinContent(2);
     
     float xs=1.0; float weight=1.0; float luminosity=59830.0;
-    if (year==2017) luminosity=41480.0;
-    if (year==2016 && preVFP) luminosity=19520.0;
-    if (year==2016 && !preVFP) luminosity=16810.0;
+    if (year=="2017") luminosity=41480.0;
+    if (year=="2016preVFP") luminosity=19520.0;
+    if (year=="2016postVFP") luminosity=16810.0;
+
+    std::string temp = "";
 
     // sample stitching: https://twiki.cern.ch/twiki/bin/viewauth/CMS/MCStitching#Stitching_inclusive_with_jet_AN1
 
     float ZJ_kfactor = 1.1258;
-    float ZJ_n_incl = 96233352; if (year==2017) ZJ_n_incl = 103344952; if (year==2016 && preVFP) ZJ_n_incl = 95170528; if (year==2016 && !preVFP) ZJ_n_incl = 82448552;
+    float ZJ_n_incl = 96233352; if (year=="2017") ZJ_n_incl = 103344952; if (year=="2016preVFP") ZJ_n_incl = 95170528; if (year=="2016postVFP") ZJ_n_incl = 82448552;
     float ZJ_xs_incl = 5398.0; float ZJ_w_incl = luminosity*ZJ_xs_incl*ZJ_kfactor/ZJ_n_incl;
-    float ZJ_n_1jet = 60368976; if (year==2017) ZJ_n_1jet = 66063776; if (year==2016 && preVFP) ZJ_n_1jet = 31654292; if (year==2016 && !preVFP) ZJ_n_1jet = 31570466;
+    float ZJ_n_1jet = 60368976; if (year=="2017") ZJ_n_1jet = 66063772; if (year=="2016preVFP") ZJ_n_1jet = 31654292; if (year=="2016postVFP") ZJ_n_1jet = 31570466;
     float ZJ_xs_1jet = 876.9; float ZJ_w_1jet = luminosity*ZJ_xs_1jet*ZJ_kfactor/(ZJ_n_1jet + (ZJ_xs_1jet/ZJ_xs_incl)*ZJ_n_incl);
-    float ZJ_n_2jet = 27494376; if (year==2017) ZJ_n_2jet = 27099644; if (year==2016 && preVFP) ZJ_n_2jet = 11896262; if (year==2016 && !preVFP) ZJ_n_1jet = 14161371;
+    float ZJ_n_2jet = 27494376; if (year=="2017") ZJ_n_2jet = 27099640; if (year=="2016preVFP") ZJ_n_2jet = 11896262; if (year=="2016postVFP") ZJ_n_1jet = 14161371;
     float ZJ_xs_2jet = 306.4; float ZJ_w_2jet = luminosity*ZJ_xs_2jet*ZJ_kfactor/(ZJ_n_2jet + (ZJ_xs_2jet/ZJ_xs_incl)*ZJ_n_incl);
-    float ZJ_n_3jet = 20425328; if (year==2017) ZJ_n_3jet = 20165684; if (year==2016 && preVFP) ZJ_n_3jet = 9460253; if (year==2016 && !preVFP) ZJ_n_3jet = 9148621;
+    float ZJ_n_3jet = 20425328; if (year=="2017") ZJ_n_3jet = 20165684; if (year=="2016preVFP") ZJ_n_3jet = 9460253; if (year=="2016postVFP") ZJ_n_3jet = 9148621;
     float ZJ_xs_3jet = 112.0; float ZJ_w_3jet = luminosity*ZJ_xs_3jet*ZJ_kfactor/(ZJ_n_3jet + (ZJ_xs_3jet/ZJ_xs_incl)*ZJ_n_incl);
-    float ZJ_n_4jet = 8885353; if (year==2017) ZJ_n_4jet = 10817550; if (year==2016 && preVFP) ZJ_n_4jet = 4655680; if (year==2016 && !preVFP) ZJ_n_4jet = 4181956;
+    float ZJ_n_4jet = 8885353; if (year=="2017") ZJ_n_4jet = 10817550; if (year=="2016preVFP") ZJ_n_4jet = 4655680; if (year=="2016postVFP") ZJ_n_4jet = 4181956;
     float ZJ_xs_4jet = 44.03; float ZJ_w_4jet = luminosity*ZJ_xs_4jet*ZJ_kfactor/(ZJ_n_4jet + (ZJ_xs_4jet/ZJ_xs_incl)*ZJ_n_incl);
 
     //float WJ_kfactor = 1.1421;
@@ -83,51 +80,51 @@ int main(int argc, char** argv) {
     //float WJ_xs_4jet = 544.3; float WJ_w_4jet = luminosity*WJ_xs_4jet*WJ_kfactor/(WJ_n_4jet + (WJ_xs_4jet/WJ_xs_incl)*WJ_n_incl);
     
     if (sample == "data_obs"){weight = 1.0;}
-    else if(sample == "embedded"){weight = 1.0; if (year==2018) weight = 55484486/nbevt->GetBinContent(1); if (year==2017) weight = 43073709/nbevt->GetBinContent(1); }
-    else if(sample == "DY"){weight = 1.0;}
-    else if(sample == "DY1"){weight = 1.0;}
-    else if(sample == "DY2"){weight = 1.0;}
-    else if(sample == "DY3"){weight = 1.0;}
-    else if(sample == "DY4"){weight = 1.0;}
-    else if(sample == "DYlow"){weight = 1.0;}
+    else if(sample == "embedded"){weight = 1.0; if (year=="2018") weight = 55484486/nbevt->GetBinContent(1); if (year=="2017") weight = 43073709/nbevt->GetBinContent(1); }
+    else if(sample == "DY"){weight = 1.0; temp = "DYJetsToLL_M-50_btagnjetw";}
+    else if(sample == "DY1"){weight = 1.0; temp = "DY1JetsToLL_btagnjetw";}
+    else if(sample == "DY2"){weight = 1.0; temp = "DY2JetsToLL_btagnjetw";}
+    else if(sample == "DY3"){weight = 1.0; temp = "DY3JetsToLL_btagnjetw";}
+    else if(sample == "DY4"){weight = 1.0; temp = "DY4JetsToLL_btagnjetw";}
+    else if(sample == "DYlow"){weight = 1.0; temp = "DYJetsToLL_M-10to50_btagnjetw";}
     //else if(sample == "DY1low"){weight = 1.0;}
     //else if(sample == "DY2low"){weight = 1.0;}
     //else if(sample == "DY3low"){weight = 1.0;}
     //else if(sample == "DY4low"){weight = 1.0;}
-    else if(sample == "GGHTT"){xs = 48.58*0.0627; weight = luminosity*xs/N;}
-    else if(sample == "GGHWW"){xs = 48.58*0.2137*0.3258*0.3258; weight = luminosity*xs/N;}
+    else if(sample == "GGHTT"){xs = 48.58*0.0627; weight = luminosity*xs/N; temp = "GluGluHToTauTau_btagnjetw";}
+    else if(sample == "GGHWW"){xs = 48.58*0.2137*0.3258*0.3258; weight = luminosity*xs/N; temp = "GluGluHToWWTo2L2Nu_btagnjetw";}
     //else if(sample == "GGZHLLTT"){xs = 0.1227*0.0627*3*0.033658; weight = luminosity*xs/N;}
     //else if(sample == "GGZHNNTT"){xs = 0.1227*0.0627*0.2000; weight = luminosity*xs/N;}
     //else if(sample == "GGZHQQTT"){xs = 0.1227*0.0627*0.6991; weight = luminosity*xs/N;}
     //else if(sample == "GGZHWW"){xs = 0.1227*0.2137; weight = luminosity*xs/N;}
-    else if(sample == "ST_tW_antitop"){xs = 39.65; weight = luminosity*xs/N;}
-    else if(sample == "ST_tW_top"){xs = 39.65; weight = luminosity*xs/N;}
-    else if(sample == "ST_t_antitop"){xs = 80.0; weight = luminosity*xs/N;}
-    else if(sample == "ST_t_top"){xs = 134.2; weight = luminosity*xs/N;}
-    else if(sample == "TTTo2L2Nu"){xs = 88.29; weight = luminosity*xs/N;}
-    else if(sample == "TTToHadronic"){xs = 377.96; weight = luminosity*xs/N;}
-    else if(sample == "TTToSemiLeptonic"){xs = 365.35; weight = luminosity*xs/N;}
-    else if(sample == "VBFHTT"){xs = 3.782*0.0627; weight = luminosity*xs/N;}
-    else if(sample == "VBFHWW"){xs = 3.782*0.2137*0.3258*0.3258; weight = luminosity*xs/N;}
-    else if(sample == "VVTo2L2Nu"){xs = 14.26; weight = luminosity*xs/N;} //11.91
-    else if(sample == "W"){xs = 61526.7; weight = luminosity*xs/N;} //NNLO xsec
+    else if(sample == "ST_tW_antitop"){xs = 39.65; weight = luminosity*xs/N; temp = "ST_tW_antitop_btagnjetw";}
+    else if(sample == "ST_tW_top"){xs = 39.65; weight = luminosity*xs/N; temp = "ST_tW_top_btagnjetw";}
+    else if(sample == "ST_t_antitop"){xs = 80.0; weight = luminosity*xs/N; temp = "ST_t-channel_antitop_btagnjetw";}
+    else if(sample == "ST_t_top"){xs = 134.2; weight = luminosity*xs/N; temp = "ST_t-channel_top_btagnjetw";}
+    else if(sample == "TTTo2L2Nu"){xs = 88.29; weight = luminosity*xs/N; temp = "TTTo2L2Nu_btagnjetw";}
+    else if(sample == "TTToHadronic"){xs = 377.96; weight = luminosity*xs/N; temp = "TTToHadronic_btagnjetw";}
+    else if(sample == "TTToSemiLeptonic"){xs = 365.35; weight = luminosity*xs/N; temp = "TTToSemiLeptonic_btagnjetw";}
+    else if(sample == "VBFHTT"){xs = 3.782*0.0627; weight = luminosity*xs/N; temp = "VBFHToTauTau_btagnjetw";}
+    else if(sample == "VBFHWW"){xs = 3.782*0.2137*0.3258*0.3258; weight = luminosity*xs/N; temp = "VBFHToWWTo2L2Nu_btagnjetw";}
+    else if(sample == "VVTo2L2Nu"){xs = 14.26; weight = luminosity*xs/N; temp = "VVTo2L2Nu_btagnjetw";} //11.91
+    else if(sample == "W"){xs = 61526.7; weight = luminosity*xs/N; temp = "WJetsToLNu_btagnjetw";} //NNLO xsec
     //else if(sample == "W"){weight = 1.0;}
     //else if(sample == "W1"){weight = 1.0;}
     //else if(sample == "W2"){weight = 1.0;}
     //else if(sample == "W3"){weight = 1.0;}
     //else if(sample == "W4"){weight = 1.0;}
-    else if(sample == "WZTo2Q2L"){xs = 6.565; weight = luminosity*xs/N;} //6.419
-    else if(sample == "WZTo3LNu"){xs = 5.257; weight = luminosity*xs/N;} //5.213
-    else if(sample == "WminusHTT"){xs = 0.5328*0.0627; weight = luminosity*xs/N;}
-    else if(sample == "WminusHWW"){xs = 0.5328*0.2137; weight = luminosity*xs/N;}
-    else if(sample == "WplusHTT"){xs = 0.840*0.0627; weight = luminosity*xs/N;}
-    else if(sample == "WplusHWW"){xs = 0.840*0.2137; weight = luminosity*xs/N;}
-    else if(sample == "ZHTT"){xs = 0.7612*0.0627; weight = luminosity*xs/N;}
-    else if(sample == "ZHWW"){xs = 0.7612*0.2137; weight = luminosity*xs/N;}
-    else if(sample == "ZZTo2Q2L"){xs = 3.676; weight = luminosity*xs/N;}
-    else if(sample == "ZZTo4L"){xs = 1.325; weight = luminosity*xs/N;}
-    else if(sample == "ttHnonbb"){xs = 0.5071*(1-0.5824); weight = luminosity*xs/N;}
-    else if(sample == "ttHbb"){xs = 0.5071*0.5824; weight = luminosity*xs/N;}
+    else if(sample == "WZTo2Q2L"){xs = 6.565; weight = luminosity*xs/N; temp = "WZTo2Q2L_btagnjetw";} //6.419
+    else if(sample == "WZTo3LNu"){xs = 5.257; weight = luminosity*xs/N; temp = "WZTo3LNu_btagnjetw";} //5.213
+    else if(sample == "WminusHTT"){xs = 0.5328*0.0627; weight = luminosity*xs/N; temp = "WminusHToTauTau_btagnjetw";}
+    else if(sample == "WminusHWW"){xs = 0.5328*0.2137; weight = luminosity*xs/N; temp = "HWminusJ_HToWW_btagnjetw";}
+    else if(sample == "WplusHTT"){xs = 0.840*0.0627; weight = luminosity*xs/N; temp = "WplusHToTauTau_btagnjetw";}
+    else if(sample == "WplusHWW"){xs = 0.840*0.2137; weight = luminosity*xs/N; temp = "HWplusJ_HToWW_btagnjetw";}
+    else if(sample == "ZHTT"){xs = 0.7612*0.0627; weight = luminosity*xs/N; temp = "ZHToTauTau_btagnjetw";}
+    else if(sample == "ZHWW"){xs = 0.7612*0.2137; weight = luminosity*xs/N; temp = "HZJ_HToWW_btagnjetw";}
+    else if(sample == "ZZTo2Q2L"){xs = 3.676; weight = luminosity*xs/N; temp = "ZZTo2Q2L_btagnjetw";}
+    else if(sample == "ZZTo4L"){xs = 1.325; weight = luminosity*xs/N; temp = "ZZTo4L_btagnjetw";}
+    else if(sample == "ttHnonbb"){xs = 0.5071*(1-0.5824); weight = luminosity*xs/N; temp = "ttHToNonbb_btagnjetw";}
+    else if(sample == "ttHbb"){xs = 0.5071*0.5824; weight = luminosity*xs/N; temp = "ttHTobb_btagnjetw";}
     else {cout << "Missing sample cross section!!!" << endl; return 0;}
     
     cout.setf(ios::fixed, ios::floatfield);
@@ -255,22 +252,35 @@ int main(int argc, char** argv) {
     TH2F* h_NNSS = new TH2F ("","",binnum_1,bins_1,binnum_2,bins_2); h_NNSS->Sumw2();
     
     std::string osssfilename = "out_2018/osss_em_2018.root";
-    if (year==2017) osssfilename = "out_2017/osss_em_2017.root";
-    if (year==2016) osssfilename = "out_2016/osss_em_2016.root";
-    TFile *fosss= new TFile(osssfilename.c_str(),"r");
+    if (year=="2017") osssfilename = "out_2017/osss_em_2017.root";
+    if (year=="2016preVFP") osssfilename = "out_2016preVFP/osss_em_2016preVFP.root";
+    if (year=="2016postVFP") osssfilename = "out_2016postVFP/osss_em_2016postVFP.root";
+    TFile *fosss = new TFile(osssfilename.c_str(),"r");
     TF1 *osss_0bjet=(TF1*) fosss->Get("OSSS_qcd_0bjet");
     TF1 *osss_bjet=(TF1*) fosss->Get("OSSS_qcd_bjet");
    
     //https://gitlab.cern.ch/cms-nanoAOD/jsonpog-integration/-/tree/master/POG/LUM
     auto pileupset = correction::CorrectionSet::from_file("UL2018_puWeights.json");
-    if (year==2017) pileupset = correction::CorrectionSet::from_file("UL2017_puWeights.json");
-    if (year==2016 && preVFP) pileupset = correction::CorrectionSet::from_file("UL2016preVFP_puWeights.json");
-    if (year==2016 && !preVFP) pileupset = correction::CorrectionSet::from_file("UL2016postVFP_puWeights.json");
+    if (year=="2017") pileupset = correction::CorrectionSet::from_file("UL2017_puWeights.json");
+    if (year=="2016preVFP") pileupset = correction::CorrectionSet::from_file("UL2016preVFP_puWeights.json");
+    if (year=="2016postVFP") pileupset = correction::CorrectionSet::from_file("UL2016postVFP_puWeights.json");
     //https://gitlab.cern.ch/cms-btv/btv-json-sf/-/tree/master/data
     auto btaggingset = correction::CorrectionSet::from_file("UL2018_btagging.json");
-    if (year==2017) btaggingset = correction::CorrectionSet::from_file("UL2017_btagging.json");
-    if (year==2016 && preVFP) btaggingset = correction::CorrectionSet::from_file("UL2016preVFP_btagging.json");
-    if (year==2016 && !preVFP) btaggingset = correction::CorrectionSet::from_file("UL2016postVFP_btagging.json");
+    if (year=="2017") btaggingset = correction::CorrectionSet::from_file("UL2017_btagging.json");
+    if (year=="2016preVFP") btaggingset = correction::CorrectionSet::from_file("UL2016preVFP_btagging.json");
+    if (year=="2016postVFP") btaggingset = correction::CorrectionSet::from_file("UL2016postVFP_btagging.json");
+    std::string btagnjetw_filename = "btagnjetw_2018_emu.root";
+    if (year=="2017") btagnjetw_filename = "btagnjetw_2017_emu.root";
+    if (year=="2016preVFP") btagnjetw_filename = "btagnjetw_2016preVFP_emu.root";
+    if (year=="2016postVFP") btagnjetw_filename = "btagnjetw_2016postVFP_emu.root";
+    //njet dependent correction on top of 1d shape SFs
+    TFile *f_weight = new TFile(btagnjetw_filename.c_str(),"r");
+    const char *histname = temp.c_str();
+    const TH1D *btagnjetw_histo;
+    if (sample!="data_obs" && sample!="embedded"){
+        btagnjetw_histo = (TH1D *)f_weight->Get(histname);
+    }
+    float btagnjetw = 1.0;
         
     Int_t nentries_wtn = (Int_t) arbre->GetEntries();
     for (Int_t i = 0; i < nentries_wtn; i++) {
@@ -284,19 +294,19 @@ int main(int argc, char** argv) {
         if (Flag_HBHENoiseIsoFilter) continue;
         if (Flag_EcalDeadCellTriggerPrimitiveFilter) continue;
         if (Flag_BadPFMuonFilter) continue;
-        if ((sample=="data_obs" or sample=="embedded") && Flag_eeBadScFilter) continue;
-        if ((year==2017 or year==2018) && Flag_ecalBadCalibReducedMINIAODFilter) continue;
+	if (Flag_eeBadScFilter) continue;
+        //if ((sample=="data_obs" or sample=="embedded") && Flag_eeBadScFilter) continue;
         
         //Trigger
         bool triggerMu8E23=(passMu8E23 && matchMu8E23_1 && matchMu8E23_2 && pt_1>24 && pt_2>9);
         bool triggerMu23E12=(passMu23E12 && matchMu23E12_1 && matchMu23E12_2 && pt_1>13 && pt_2>24);
-        if (year==2018 or year==2017 or (year==2016 and sample=="data_obs" && run>=278820)){
+        if (year=="2018" or year=="2017" or ((year=="2016preVFP" or year=="2016postVFP") and sample=="data_obs" && run>=278820)){
             triggerMu8E23=(passMu8E23DZ && matchMu8E23DZ_1 && matchMu8E23DZ_2 && pt_1>24 && pt_2>9);
             triggerMu23E12=(passMu23E12DZ && matchMu23E12DZ_1 && matchMu23E12DZ_2 && pt_1>13 && pt_2>24);
         }
         if (!triggerMu8E23 && !triggerMu23E12) continue;
         
-        if (fabs(eta_1)>2.4 or fabs(eta_2)>2.4) continue;
+        if (fabs(eta_1)>2.5 or fabs(eta_2)>2.4) continue;
 
         TLorentzVector myele;
         myele.SetPtEtaPhiM(pt_1,eta_1,phi_1,m_1);
@@ -390,10 +400,10 @@ int main(int argc, char** argv) {
             }
             
             sf_MC *= genweight;
-	    if (year == 2018) sf_MC *= pileupset->at("Collisions18_UltraLegacy_goldenJSON")->evaluate({npu, "nominal"});
-	    if (year == 2017) sf_MC *= pileupset->at("Collisions17_UltraLegacy_goldenJSON")->evaluate({npu, "nominal"});
-	    if (year == 2016) sf_MC *= pileupset->at("Collisions16_UltraLegacy_goldenJSON")->evaluate({npu, "nominal"});
-            if (year!=2018) sf_MC *= prefiring_weight;
+	    if (year == "2018") sf_MC *= pileupset->at("Collisions18_UltraLegacy_goldenJSON")->evaluate({npu, "nominal"});
+	    if (year == "2017") sf_MC *= pileupset->at("Collisions17_UltraLegacy_goldenJSON")->evaluate({npu, "nominal"});
+	    if (year == "2016preVFP" or year == "2016postVFP") sf_MC *= pileupset->at("Collisions16_UltraLegacy_goldenJSON")->evaluate({npu, "nominal"});
+            sf_MC *= prefiring_weight;
             
         }
         
@@ -429,26 +439,29 @@ int main(int argc, char** argv) {
 	float bMeta_2 = 0;
         int bMflavor_2 = 0;
         float bscore_thres = 0.2783;
-        if (year==2017) bscore_thres = 0.3040;
-        if (year==2016 && preVFP) bscore_thres = 0.2598;
-	if (year==2016 && !preVFP) bscore_thres = 0.2489;
+        if (year=="2017") bscore_thres = 0.3040;
+        if (year=="2016preVFP") bscore_thres = 0.2598;
+	if (year=="2016postVFP") bscore_thres = 0.2489;
         if (bpt_deepflavour_1>20 && bscore_deepflavour_1>bscore_thres && fabs(beta_deepflavour_1)<2.4){
             bMpt_1 = bpt_deepflavour_1;
 	    bMeta_2 = fabs(beta_deepflavour_1);
             bMflavor_1 = bflavour_deepflavour_1;
             nbtag20++;
         }
-        if (bpt_deepflavour_2>20 && bscore_deepflavour_2>bscore_thres && fabs(beta_deepflavour_2)<2.4){
-            bMpt_2 = bpt_deepflavour_2;
-	    bMeta_2 = fabs(beta_deepflavour_2);
-            bMflavor_2 = bflavour_deepflavour_2;
-            nbtag20++;
-        }
+        //if (bpt_deepflavour_2>20 && bscore_deepflavour_2>bscore_thres && fabs(beta_deepflavour_2)<2.4){
+        //    bMpt_2 = bpt_deepflavour_2;
+	//    bMeta_2 = fabs(beta_deepflavour_2);
+        //    bMflavor_2 = bflavour_deepflavour_2;
+        //    nbtag20++;
+        //}
         
         float weight_btag = 1.0;//no correction if requiring 0 btag
         if (sample!="data_obs" && sample!="embedded"){
-	    if (nbtag20==1) weight_btag = btaggingset->at("deepJet_shape")->evaluate({"central", bMflavor_1, bMeta_1, bMpt_1, bscore_deepflavour_1});
-	    if (nbtag20==2) weight_btag = btaggingset->at("deepJet_shape")->evaluate({"central", bMflavor_1, bMeta_1, bMpt_1, bscore_deepflavour_1})*btaggingset->at("deepJet_shape")->evaluate({"central", bMflavor_2, bMeta_2, bMpt_2, bscore_deepflavour_2});
+            int njets_treated = njets;
+	    if (njets > 10) njets_treated = 10;
+	    if (njets > 0) btagnjetw = btagnjetw_histo->GetBinContent(njets_treated);
+	    if (nbtag20>=1) weight_btag = btaggingset->at("deepJet_shape")->evaluate({"central", bMflavor_1, bMeta_1, bMpt_1, bscore_deepflavour_1}) * btagnjetw;
+	    //if (nbtag20==2) weight_btag = btaggingset->at("deepJet_shape")->evaluate({"central", bMflavor_1, bMeta_1, bMpt_1, bscore_deepflavour_1})*btaggingset->at("deepJet_shape")->evaluate({"central", bMflavor_2, bMeta_2, bMpt_2, bscore_deepflavour_2});
         }
         
         float sssf=2.5;
