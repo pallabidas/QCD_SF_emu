@@ -127,11 +127,17 @@ TF1 *M_FR(std::string type, std::string files, std::string num, std::string denu
         //theFit->SetParameter(4, -0.3);
     }
     if (name.find("0bjet") < 140){
-        theFit->SetParameter(0, 2.5);
-        theFit->SetParameter(1, -0.2);
-        theFit->SetParameter(2, 0.006);
-        theFit->SetParameter(3, -0.002);
+        theFit->SetParameter(0, 2.79800);
+        theFit->SetParameter(1, -0.383958);
+        theFit->SetParameter(2, 0.0557528);
+        theFit->SetParameter(3, -0.00731193);
         //theFit->SetParameter(4, -0.002);
+    }
+    else {
+        theFit->SetParameter(0, 2.96074);
+        theFit->SetParameter(1, -2.52701);
+        theFit->SetParameter(2, 0.887320);
+        theFit->SetParameter(3, -0.0923727);
     }
     //else {  // for 2016 pre-VFP (FCN 1.42941, 5.42602)
     //    theFit->FixParameter(0, 2.84664);
@@ -141,14 +147,14 @@ TF1 *M_FR(std::string type, std::string files, std::string num, std::string denu
     //    theFit2->FixParameter(0, 1.15756);
     //    theFit2->FixParameter(1, -0.0830792);
     //}
-    else { // for 2016 post-VFP (FCN 2.2854,  17.7659)
-        theFit->FixParameter(0, 5.27659);
-        theFit->FixParameter(1, -6.63006);
-        theFit->FixParameter(2, 2.60069);
-        theFit->FixParameter(3, -0.296494);
-	theFit2->FixParameter(0, 0.826899);
-	theFit2->FixParameter(1, 0.0108449);
-    }
+    //else { // for 2016 post-VFP (FCN 2.2854,  17.7659)
+    //    theFit->FixParameter(0, 5.27659);
+    //    theFit->FixParameter(1, -6.63006);
+    //    theFit->FixParameter(2, 2.60069);
+    //    theFit->FixParameter(3, -0.296494);
+    //    theFit2->FixParameter(0, 0.826899);
+    //    theFit2->FixParameter(1, 0.0108449);
+    //}
     
     TGraph_FR->Fit("theFit", "R0");
     TGraph_FR->Fit("theFit2", "R0");
@@ -164,16 +170,17 @@ TF1 *M_FR(std::string type, std::string files, std::string num, std::string denu
     TGraph_FR->SetTitle("");
     TGraph_FR->Draw("PAE");
     TGraph_FR->SetLineWidth(3);
-    std::string outNaming = "out_2016/fit2016_" + name + ".pdf";
+    std::string outNaming = "out_2018/fit2018_" + name + ".pdf";
+    if (year==20161) outNaming = "out_2016preVFP/fit2016preVFP_" + name + ".pdf";
+    if (year==20162) outNaming = "out_2016postVFP/fit2016postVFP_" + name + ".pdf";
     if (year==2017) outNaming = "out_2017/fit2017_" + name + ".pdf";
-    if (year==2018) outNaming = "out_2018/fit2018_" + name + ".pdf";
     TLatex t = TLatex();
     t.SetNDC();
     t.SetTextFont(42);
     t.SetTextAlign(12);
     t.SetTextSize(0.04);
-    //if (year==2016) t.DrawLatex(0.38, .96, "2016 pre-VFP, 19.5 fb^{-1} (13 TeV)");
-    if (year==2016) t.DrawLatex(0.36, .96, "2016 post-VFP, 16.8 fb^{-1} (13 TeV)");
+    if (year==20161) t.DrawLatex(0.38, .96, "2016 preVFP, 19.5 fb^{-1} (13 TeV)");
+    if (year==20162) t.DrawLatex(0.36, .96, "2016 postVFP, 16.8 fb^{-1} (13 TeV)");
     if (year==2017) t.DrawLatex(0.52, .96, "2017, 41.5 fb^{-1} (13 TeV)");
     if (year==2018) t.DrawLatex(0.52, .96, "2018, 59.8 fb^{-1} (13 TeV)");
 /*
@@ -268,7 +275,8 @@ TF1 *M_FR(std::string type, std::string files, std::string num, std::string denu
 
     canvas->SaveAs(outNaming.c_str());
     
-    std::string osssfilename = "out_2016/osss_em_2016.root";
+    std::string osssfilename = "out_2016preVFP/osss_em_2016preVFP.root";
+    if (year==20162) osssfilename = "out_2016postVFP/osss_em_2016postVFP.root";
     if (year==2017) osssfilename = "out_2017/osss_em_2017.root";
     if (year==2018) osssfilename = "out_2018/osss_em_2018.root";
     TFile *FR_H = new TFile(osssfilename.c_str(), "UPDATE");
@@ -298,9 +306,10 @@ void fit_qcdsf_em(int year) {
     //gStyle->SetOptFit(1111);
     
     Double_t fMin = 0.3;
-    Double_t fMax = 5.05;
+    Double_t fMax = 4.8;
     
-    std::string datafile="out_2016/Sub2016.root";
+    std::string datafile="out_2016preVFP/Sub2016preVFP.root";
+    if (year==20162) datafile="out_2016postVFP/Sub2016postVFP.root";
     if (year==2017) datafile="out_2017/Sub2017.root";
     if (year==2018) datafile="out_2018/Sub2018.root";
     
