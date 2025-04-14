@@ -6,7 +6,7 @@ for sample in data_obs embedded VBFHTT DY DYlow ST_tW_top DY2 DY1 ST_tW_antitop 
 
 echo ${sample}
 
-./selection_qcd_em.exe /eos/user/p/pdas/HAA_emuSF/skim_${year}/all/${sample}.root qcdfiles_em_${year}/${sample}.root ${sample} ${year}
+./selection_qcd_em.exe /eos/user/p/pdas/HAA_emuSF/skim_${year}_updated/all/${sample}.root qcdfiles_em_${year}/${sample}.root ${sample} ${year}
 
 done
 

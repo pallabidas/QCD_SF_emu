@@ -139,6 +139,14 @@ TF1 *M_FR(std::string type, std::string files, std::string num, std::string denu
         theFit->SetParameter(2, 0.887320);
         theFit->SetParameter(3, -0.0923727);
     }
+    //else { // for 2016 post-VFP (updated)
+    //    theFit->FixParameter(0, 5.58221);
+    //    theFit->FixParameter(1, -7.46893);
+    //    theFit->FixParameter(2, 3.00113);
+    //    theFit->FixParameter(3, -0.349318);
+    //    theFit2->FixParameter(0, 0.721433);
+    //    theFit2->FixParameter(1, 0.147002);
+    //}
     //else {  // for 2016 pre-VFP (FCN 1.42941, 5.42602)
     //    theFit->FixParameter(0, 2.84664);
     //    theFit->FixParameter(1, -2.69774);

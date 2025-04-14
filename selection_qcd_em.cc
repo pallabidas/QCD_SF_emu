@@ -56,13 +56,13 @@ int main(int argc, char** argv) {
     // sample stitching: https://twiki.cern.ch/twiki/bin/viewauth/CMS/MCStitching#Stitching_inclusive_with_jet_AN1
 
     float ZJ_kfactor = 1.1258;
-    float ZJ_n_incl = 96233352; if (year=="2017") ZJ_n_incl = 103344952; if (year=="2016preVFP") ZJ_n_incl = 95170528; if (year=="2016postVFP") ZJ_n_incl = 82448552;
+    float ZJ_n_incl = 96233312; if (year=="2017") ZJ_n_incl = 103344952; if (year=="2016preVFP") ZJ_n_incl = 95170544; if (year=="2016postVFP") ZJ_n_incl = 82448536;
     float ZJ_xs_incl = 5398.0; float ZJ_w_incl = luminosity*ZJ_xs_incl*ZJ_kfactor/ZJ_n_incl;
-    float ZJ_n_1jet = 60368976; if (year=="2017") ZJ_n_1jet = 66063772; if (year=="2016preVFP") ZJ_n_1jet = 31654292; if (year=="2016postVFP") ZJ_n_1jet = 31570466;
+    float ZJ_n_1jet = 60368984; if (year=="2017") ZJ_n_1jet = 66063772; if (year=="2016preVFP") ZJ_n_1jet = 31654288; if (year=="2016postVFP") ZJ_n_1jet = 31570464;
     float ZJ_xs_1jet = 876.9; float ZJ_w_1jet = luminosity*ZJ_xs_1jet*ZJ_kfactor/(ZJ_n_1jet + (ZJ_xs_1jet/ZJ_xs_incl)*ZJ_n_incl);
-    float ZJ_n_2jet = 27494376; if (year=="2017") ZJ_n_2jet = 27099640; if (year=="2016preVFP") ZJ_n_2jet = 11896262; if (year=="2016postVFP") ZJ_n_1jet = 14161371;
+    float ZJ_n_2jet = 27494380; if (year=="2017") ZJ_n_2jet = 27099640; if (year=="2016preVFP") ZJ_n_2jet = 11896262; if (year=="2016postVFP") ZJ_n_2jet = 14161371;
     float ZJ_xs_2jet = 306.4; float ZJ_w_2jet = luminosity*ZJ_xs_2jet*ZJ_kfactor/(ZJ_n_2jet + (ZJ_xs_2jet/ZJ_xs_incl)*ZJ_n_incl);
-    float ZJ_n_3jet = 20425328; if (year=="2017") ZJ_n_3jet = 20165684; if (year=="2016preVFP") ZJ_n_3jet = 9460253; if (year=="2016postVFP") ZJ_n_3jet = 9148621;
+    float ZJ_n_3jet = 20425316; if (year=="2017") ZJ_n_3jet = 20165684; if (year=="2016preVFP") ZJ_n_3jet = 9460253; if (year=="2016postVFP") ZJ_n_3jet = 9148621;
     float ZJ_xs_3jet = 112.0; float ZJ_w_3jet = luminosity*ZJ_xs_3jet*ZJ_kfactor/(ZJ_n_3jet + (ZJ_xs_3jet/ZJ_xs_incl)*ZJ_n_incl);
     float ZJ_n_4jet = 8885353; if (year=="2017") ZJ_n_4jet = 10817550; if (year=="2016preVFP") ZJ_n_4jet = 4655680; if (year=="2016postVFP") ZJ_n_4jet = 4181956;
     float ZJ_xs_4jet = 44.03; float ZJ_w_4jet = luminosity*ZJ_xs_4jet*ZJ_kfactor/(ZJ_n_4jet + (ZJ_xs_4jet/ZJ_xs_incl)*ZJ_n_incl);
